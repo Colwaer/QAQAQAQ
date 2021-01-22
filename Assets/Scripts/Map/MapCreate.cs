@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.IO;
 
@@ -50,10 +51,25 @@ public class MapCreate : MonoBehaviour
 
     private void Update()
     {
-        HighlightUnit();
-        EditMap();
+        if(!IsShelter())
+        {
+            HighlightUnit();
+            EditMap();
+        }
     }
-
+    bool IsShelter()
+    {
+        if(EventSystem.current.IsPointerOverGameObject())
+        {
+            mouseIndicator.SetActive(false);
+            return true;
+        }
+        else
+        {
+            mouseIndicator.SetActive(true);
+            return false;
+        }    
+    }
     //高亮鼠标所在的格子
     void HighlightUnit()
     {
@@ -69,23 +85,7 @@ public class MapCreate : MonoBehaviour
     }
     float FloatToInt(float value)
     {
-        if (value - (int)value > 0.5f)
-        {
-            value = (int)value + 1;
-        }
-        else if (value - (int)value < 0.5f && value - (int)value > 0)
-        {
-            value = (int)value;
-        }
-        else if (value - (int)value < 0 && value - (int)value > -0.5f)
-        {
-            value = (int)value + 1;
-        }
-        else
-        {
-            value = (int)value - 1;
-        }
-
+        value = Mathf.Round(value);
         return value;
     }
     void EditMap()
@@ -174,5 +174,9 @@ public class MapCreate : MonoBehaviour
         return UnitType.blank;
     }
 
-
+    public void ChangePath(string path)
+    {
+        if(path != ""&&path.Length < 50)
+            savePath = path;
+    }
 }
