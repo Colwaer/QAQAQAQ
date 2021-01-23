@@ -4,25 +4,41 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.IO;
+using UnityEngine.UI;
 
 public class MapCreate : MonoBehaviour
 {
-    public List<List<MapUnit>> Map = new List<List<MapUnit>>();
-
     public GameObject mouseIndicator;
-
-    public GameObject[] MapUnitPres;
-    List<Sprite> MapUnitSprites = new List<Sprite>();
-
-    UnitType mapUnitType;
-
     string savePath;
+
+    public List<List<MapUnit>> Map = new List<List<MapUnit>>();
+    public GameObject[] MapUnitPres;
+    //List<Sprite> MapUnitSprites = new List<Sprite>();
+
+    //所有已经绘制的格子的副本
+    List<GameObject> UnitCopies = new List<GameObject>();
+
+    [Header("起点终点坐标")]
+    public Vector2 startPos = -Vector2.one;
+    public Vector2 endPos = -Vector2.one;
+    public Text startPosText;
+    public Text endPosText;
+
 
     [Header("地图尺寸")]
     public int xMax = 17;
     public int yMax = 9;
 
+    [Header("未命名")]
+    public UnitType mapUnitType;
+
+    public bool isEditing;
+    public bool isSetingStartPos;
+    public bool isSetingEndPos;
+
+    //取整后的坐标
     Vector2 MousePosition;
+
 
     private void Start()
     {
@@ -43,10 +59,10 @@ public class MapCreate : MonoBehaviour
         mouseIndicator = Instantiate(mouseIndicator);
         mouseIndicator.transform.position = Vector2.zero;
 
-        for (int i = 0; i < MapUnitPres.Length; i++)
-        {
-            MapUnitSprites.Add(MapUnitPres[i].GetComponent<SpriteRenderer>().sprite);
-        }
+        //for (int i = 0; i < MapUnitPres.Length; i++)
+        //{
+        //    MapUnitSprites.Add(MapUnitPres[i].GetComponent<SpriteRenderer>().sprite);
+        //}
     }
 
     private void Update()
@@ -54,8 +70,20 @@ public class MapCreate : MonoBehaviour
         if(!IsShelter())
         {
             HighlightUnit();
+        }
+        if (isEditing)
+        {
             EditMap();
         }
+        else if (isSetingStartPos)
+        {
+            SetStartPos();
+        }
+        else if (isSetingEndPos)
+        {
+            SetEndPos();
+        }
+
     }
     bool IsShelter()
     {
@@ -81,6 +109,7 @@ public class MapCreate : MonoBehaviour
 
         if (MousePosition.x >= xMax || MousePosition.x < 0 || MousePosition.y >= yMax || MousePosition.y < 0)
             return;
+
         mouseIndicator.transform.position = MousePosition;
     }
     float FloatToInt(float value)
@@ -88,25 +117,68 @@ public class MapCreate : MonoBehaviour
         value = Mathf.Round(value);
         return value;
     }
+    bool IsMousePosInMap()
+    {
+        if (MousePosition.x >= xMax || MousePosition.x < 0 || MousePosition.y >= yMax || MousePosition.y < 0)
+            return false;
+        return true;
+    }
     void EditMap()
     {
         if (Input.GetMouseButtonDown(0))
         {
             //如果不在地图范围内则退出
-            if (MousePosition.x >= xMax || MousePosition.x < 0 || MousePosition.y >= yMax || MousePosition.y < 0)
+            if (!IsMousePosInMap())
                 return;
-            Map[(int)MousePosition.x][(int)MousePosition.y].type = UnitType.type1;
-            Instantiate(MapUnitPres[(int)Map[(int)MousePosition.x][(int)MousePosition.y].type]).transform.position
-                = Map[(int)MousePosition.x][(int)MousePosition.y].pos;
+            Map[(int)MousePosition.x][(int)MousePosition.y].SwitchType(mapUnitType);
+
+            GameObject t;
+            t = Instantiate(MapUnitPres[(int)Map[(int)MousePosition.x][(int)MousePosition.y].GetUnitType()]);
+            t.transform.position = Map[(int)MousePosition.x][(int)MousePosition.y].pos;
+
+            UnitCopies.Add(t);
         }
     }
+    void SetStartPos()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!IsMousePosInMap())
+                return;
+            startPos = MousePosition;
+            startPosText.text = "起点坐标:" + startPos.x + "," + startPos.y;
+        }
+    }
+    void SetEndPos()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!IsMousePosInMap())
+                return;
+            endPos = MousePosition;
+            endPosText.text = "终点坐标:" + endPos.x + "," + endPos.y;
+        }
+    }
+
+    //下面的几个函数均为button点击事件
     public void DrawMap()
     {
+        if (UnitCopies != null)
+        {
+            foreach(GameObject t in UnitCopies)
+            {
+                Destroy(t);
+            }
+            UnitCopies.Clear();
+        }
         for (int i = 0; i < xMax; i++)
         {
             for (int j = 0; j < yMax; j++)
             {
-                Instantiate(MapUnitPres[(int)Map[i][j].type]).transform.position = Map[i][j].pos;
+                GameObject t;
+                t = Instantiate(MapUnitPres[(int)Map[i][j].GetUnitType()]);
+                t.transform.position = Map[i][j].pos;
+                UnitCopies.Add(t);
             }
         }
     }
@@ -115,24 +187,63 @@ public class MapCreate : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    public void Switch()
+    public void Edit()
     {
-
+        isEditing = true;
+        isSetingStartPos = false;
+        isSetingEndPos = false;
+    }
+    public void ButtonSetStart()
+    {
+        isSetingStartPos = true;
+        isEditing = false;
+        isSetingEndPos = false;
+    }
+    public void ButtonSetEnd()
+    {
+        isSetingEndPos = true;
+        isSetingStartPos = false;
+        isEditing = false;     
     }
     public void Save()
     {
+        //检测是否能保存
+        bool canBeSaved = false;
+        if (startPos == -Vector2.one || endPos == -Vector2.one)
+            canBeSaved = false;
+        for (int i = 0; i < xMax; i++)
+        {
+            for (int j = 0; j < yMax; j++)
+            {
+                if(Map[i][j].canPlaceOperator)
+                {
+                    canBeSaved = true;
+                    break;
+                }
+            }
+        }
+        if(!canBeSaved)
+        {
+            Debug.LogError("地图不能被保存");
+            return;
+        }
+
         using (
             var writer = new BinaryWriter(File.Open(savePath, FileMode.Create))
         ) {
             writer.Write(xMax);
             writer.Write(yMax);
+            writer.Write(startPos.x);
+            writer.Write(startPos.y);
+            writer.Write(endPos.x);
+            writer.Write(endPos.y);
             for (int i = 0; i < xMax; i++)
             {
                 for (int j = 0; j < yMax; j++)
                 {
                     writer.Write(Map[i][j].pos.x);
                     writer.Write(Map[i][j].pos.y);
-                    writer.Write((int)Map[i][j].type);
+                    writer.Write((int)Map[i][j].GetUnitType());
                 }
             }
         }
@@ -144,16 +255,24 @@ public class MapCreate : MonoBehaviour
         ) {
             int xCount = reader.ReadInt32();
             int yCount = reader.ReadInt32();
+            startPos.x = reader.ReadSingle();
+            startPos.y = reader.ReadSingle();
+            endPos.x = reader.ReadSingle();
+            endPos.y = reader.ReadSingle();
             for (int i = 0; i < xCount; i++)
             {
                 for (int j = 0; j < yCount; j++)
                 {
                     Map[i][j].pos.x = reader.ReadSingle();
                     Map[i][j].pos.y = reader.ReadSingle();
-                    Map[i][j].type = IntToUnitType(reader.ReadInt32());
+                    Map[i][j].SwitchType(IntToUnitType(reader.ReadInt32()));
                 }
             }
         }
+
+        //load以后的小处理
+        startPosText.text = "起点坐标:" + startPos.x + "," + startPos.y;
+        endPosText.text = "终点坐标:" + endPos.x + "," + endPos.y;
         DrawMap();
     }
     /// <summary>
@@ -176,7 +295,7 @@ public class MapCreate : MonoBehaviour
 
     public void ChangePath(string path)
     {
-        if(path != ""&&path.Length < 50)
+        if (path != "" && path.Length < 50)
             savePath = path;
     }
 }
