@@ -15,7 +15,12 @@ public class MapUnit
 
     private UnitType type;
 
+    public float f, g, h;
+
+    public MapUnit father;
+
     public bool canPlaceOperator { get; private set; }
+    public bool canEnermyPass { get; private set; }
 
     public void SwitchType(UnitType Type)
     {
@@ -24,7 +29,7 @@ public class MapUnit
     }
 
     /// <summary>
-    /// 设置某种格子类型能不能放置干员
+    /// 设置某种格子类型能不能放置干员，能不能使敌人经过
     /// </summary>
     void ChangeCanPlaceOperator()
     {
@@ -32,15 +37,19 @@ public class MapUnit
         {
             case UnitType.defaultType:
                 canPlaceOperator = false;
+                canEnermyPass = true;
                 break;
             case UnitType.blank:
                 canPlaceOperator = false;
+                canEnermyPass = false;
                 break;
             case UnitType.type1:
                 canPlaceOperator = true;
+                canEnermyPass = false;
                 break;
             case UnitType.type2:
                 canPlaceOperator = false;
+                canEnermyPass = true;
                 break;
             default:
                 Debug.LogErrorFormat("格子{0}没有的类型为{1}，该类型不存在", pos, type);
