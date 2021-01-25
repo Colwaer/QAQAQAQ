@@ -4,8 +4,9 @@ using UnityEngine;
 using System;
 namespace Battle
 {
-    public enum AttackKind{Physics = 0,Magic,Real}
-    public class BaseCharacter
+    public enum AttackKind { Physics = 0, Magic, Real }
+
+    public class BaseCharacter : MonoBehaviour
     {
         private float m_maxHelath;
         private float m_attack;
@@ -15,14 +16,14 @@ namespace Battle
         public Action DieEvent;
         public float Health
         {
-            get{return Health;}
+            get { return Health; }
             private set
             {
                 if(value <=0) DieEvent();
                 Health = value;
             }
         }
-        public BaseCharacter(float attack, float defend, float magicDamage, float magicDefend,float maxHelath)
+        public BaseCharacter(float attack, float defend, float magicDamage, float magicDefend, float maxHelath)
         {
             m_attack = attack;
             m_defend = defend;
@@ -50,5 +51,11 @@ namespace Battle
             }
             Health = Mathf.Max(0,delta + Health);
         }
+    
+        virtual protected void Attack()
+        {
+
+        }
+        
     }
 }

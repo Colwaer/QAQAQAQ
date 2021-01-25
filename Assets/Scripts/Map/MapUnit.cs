@@ -9,6 +9,9 @@ namespace Map
         public List<List<MapUnit>> Map;
         public int xMax;
         public int yMax;
+
+        public List<Vector2> path = new List<Vector2>();
+
         public MapEntity(int x,int y,Vector2 startPos,Vector2 endPos)
         {
             StartPos = startPos;
@@ -16,9 +19,9 @@ namespace Map
             xMax = x;
             yMax = y;
             Map = new List<List<MapUnit>>();
-            for(int i = 0; i < Map.Count; i++)
+            for (int i = 0; i < xMax; i++)
             {
-                List<MapUnit> temp = new List<MapUnit>(yMax);
+                List<MapUnit>temp = new List<MapUnit>(yMax);
                 Map.Add(temp);
                 for (int j = 0; j < yMax; j++)
                     temp.Add(new MapUnit(i, j));

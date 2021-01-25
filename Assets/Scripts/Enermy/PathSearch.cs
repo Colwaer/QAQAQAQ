@@ -16,13 +16,13 @@ public class PathSearch : MonoBehaviour
 
         List<MapUnit> openList = new List<MapUnit>();
         List<MapUnit> closeList = new List<MapUnit>();
-        List<Vector2> path = new List<Vector2>();
+        public List<Vector2> path = new List<Vector2>();
 
         Vector2[] fourDir = { new Vector2(0, 1), new Vector2(0, -1), new Vector2(-1, 0), new Vector2(1, 0) };
 
         private void Start()
         {
-            GetCurrentMap();
+            //GetCurrentMap();
         }
         private void Update()
         {
@@ -30,11 +30,10 @@ public class PathSearch : MonoBehaviour
             if(Input.GetKeyDown(KeyCode.S))
             {
                 Search();
-                foreach(Vector2 p in path)
-                {
-                    Debug.Log(p);
-
-                }
+                //foreach(Vector2 p in path)
+                //{
+                //    Debug.Log(p);
+                //}
                 //Debug.Log(startPos);
                 //Debug.Log(endPos);
             }
@@ -98,6 +97,11 @@ public class PathSearch : MonoBehaviour
 
             }
             path.Reverse();
+
+            MapCreate mapCreator;
+            mapCreator = GameObject.FindGameObjectWithTag("MapCreator").GetComponent<MapCreate>();
+            mapCreator.mapEntity.path = path;
+
         }
 
 
@@ -106,8 +110,8 @@ public class PathSearch : MonoBehaviour
             MapCreate mapCreator;
             mapCreator = GameObject.FindGameObjectWithTag("MapCreator").GetComponent<MapCreate>();
             Map = mapCreator.mapEntity.Map;
-            startPos = mapCreator.startPos;
-            endPos = mapCreator.endPos;
+            startPos = mapCreator.mapEntity.StartPos;
+            endPos = mapCreator.mapEntity.EndPos;
             xMax = mapCreator.xMax;
             yMax = mapCreator.yMax;
         }

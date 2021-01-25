@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 // where 限制了T的范围
 public class Singleton<T> : MonoBehaviour where T : Singleton<T>
 {
@@ -13,6 +14,7 @@ public class Singleton<T> : MonoBehaviour where T : Singleton<T>
             return instance;
         }
     }
+
 
     public static bool IsInitialized
     {

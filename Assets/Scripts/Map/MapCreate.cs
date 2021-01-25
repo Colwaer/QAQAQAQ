@@ -20,8 +20,6 @@ namespace Map
         List<GameObject> UnitCopies = new List<GameObject>();
 
         [Header("起点终点坐标")]
-        public Vector2 startPos = -Vector2.one;
-        public Vector2 endPos = -Vector2.one;
         public Text startPosText;
         public Text endPosText;
 
@@ -44,15 +42,12 @@ namespace Map
         private void Start()
         {
             savePath = Path.Combine(Application.persistentDataPath, "saveFile");
-            mapEntity = new MapEntity(xMax,yMax,startPos,endPos);
+            mapEntity = new MapEntity(xMax, yMax, Vector2.zero, Vector2.zero);
             Gizmos.color = Color.red;
             mouseIndicator = Instantiate(mouseIndicator);
             mouseIndicator.transform.position = Vector2.zero;
 
-            //for (int i = 0; i < MapUnitPres.Length; i++)
-            //{
-            //    MapUnitSprites.Add(MapUnitPres[i].GetComponent<SpriteRenderer>().sprite);
-            //}
+
         }
 
         private void Update()
@@ -127,6 +122,7 @@ namespace Map
                 t.transform.position = mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].pos;
 
                 UnitCopies.Add(t);
+                
             }
         }
         void SetStartPos()
@@ -135,8 +131,8 @@ namespace Map
             {
                 if (!IsMousePosInMap())
                     return;
-                startPos = MousePosition;
-                startPosText.text = "起点坐标:" + startPos.x + "," + startPos.y;
+                mapEntity.StartPos = MousePosition;
+                startPosText.text = "起点坐标:" + mapEntity.StartPos.x + "," + mapEntity.StartPos.y;
             }
         }
         void SetEndPos()
@@ -145,8 +141,8 @@ namespace Map
             {
                 if (!IsMousePosInMap())
                     return;
-                endPos = MousePosition;
-                endPosText.text = "终点坐标:" + endPos.x + "," + endPos.y;
+                mapEntity.EndPos = MousePosition;
+                endPosText.text = "终点坐标:" + mapEntity.EndPos.x + "," + mapEntity.EndPos.y;
             }
         }
 
@@ -201,11 +197,11 @@ namespace Map
         }
         public void Load()
         {
-            MapSaver.Load(savePath,mapEntity);
+            MapSaver.Load(savePath, mapEntity);
 
             //load以后的小处理
-            startPosText.text = "起点坐标:" + startPos.x + "," + startPos.y;
-            endPosText.text = "终点坐标:" + endPos.x + "," + endPos.y;
+            startPosText.text = "起点坐标:" + mapEntity.StartPos.x + "," + mapEntity.StartPos.y;
+            endPosText.text = "终点坐标:" + mapEntity.EndPos.x + "," + mapEntity.EndPos.y;
             DrawMap();
         }
 

@@ -9,6 +9,7 @@ public class CostManager : Singleton<CostManager>
     private float m_growSpeed;
     private float m_growVal;
     private float m_timer = 0;
+
     public Action<float> OnCostChanged;
     
     private void Update()

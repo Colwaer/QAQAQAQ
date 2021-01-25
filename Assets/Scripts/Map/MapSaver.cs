@@ -36,6 +36,7 @@ namespace Map
                 writer.Write(entity.yMax);
                 writer.Write(entity.StartPos.x);
                 writer.Write(entity.StartPos.y);
+                
                 writer.Write(entity.EndPos.x);
                 writer.Write(entity.EndPos.y);
                 for (int i = 0; i < entity.xMax; i++)
@@ -49,7 +50,7 @@ namespace Map
                 }
             }
         }
-        public static void Load(string savePath,MapEntity entity)
+        public static void Load(string savePath, MapEntity entity)
         {
             using (
                 var reader = new BinaryReader(File.Open(savePath,FileMode.Open))
