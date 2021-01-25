@@ -1,94 +1,131 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum UnitType
+namespace Map
 {
-    defaultType,
-    blank,
-    type1,
-    type2,
-    
-}
-public class MapUnit
-{
-    public Vector2 pos;
-
-    private UnitType type;
-
-    public float f, g, h;
-
-    public MapUnit father;
-
-    public bool canPlaceOperator { get; private set; }
-    public bool canEnermyPass { get; private set; }
-
-    public void SwitchType(UnitType Type)
+    public class MapEntity
     {
-        type = Type;
-        ChangeCanPlaceOperator();
-    }
-
-    /// <summary>
-    /// è®¾ç½®æŸç§æ ¼å­ç±»å‹èƒ½ä¸èƒ½æ”¾ç½®å¹²å‘˜ï¼Œèƒ½ä¸èƒ½ä½¿æ•Œäººç»è¿‡
-    /// </summary>
-    void ChangeCanPlaceOperator()
-    {
-        switch(type)
+        public Vector2 StartPos,EndPos;
+        public List<List<MapUnit>> Map;
+        public int xMax;
+        public int yMax;
+        public MapEntity(int x,int y,Vector2 startPos,Vector2 endPos)
         {
-            case UnitType.defaultType:
-                canPlaceOperator = false;
-                canEnermyPass = true;
-                break;
-            case UnitType.blank:
-                canPlaceOperator = false;
-                canEnermyPass = false;
-                break;
-            case UnitType.type1:
-                canPlaceOperator = true;
-                canEnermyPass = false;
-                break;
-            case UnitType.type2:
-                canPlaceOperator = false;
-                canEnermyPass = true;
-                break;
-            default:
-                Debug.LogErrorFormat("æ ¼å­{0}æ²¡æœ‰çš„ç±»å‹ä¸º{1}ï¼Œè¯¥ç±»å‹ä¸å­˜åœ¨", pos, type);
-                break;
+            StartPos = startPos;
+            EndPos = endPos;
+            xMax = x;
+            yMax = y;
+            Map = new List<List<MapUnit>>();
+            for(int i = 0; i < Map.Count; i++)
+            {
+                List<MapUnit> temp = new List<MapUnit>(yMax);
+                Map.Add(temp);
+                for (int j = 0; j < yMax; j++)
+                    temp.Add(new MapUnit(i, j));
+            }
         }
     }
-    public UnitType GetUnitType()
+    public enum UnitType
     {
-        return type;
-    }
+        defaultType,
+        blank,
+        type1,
+        type2,
 
-    public MapUnit()
-    {
-        
     }
-    public MapUnit(int x, int y)
+    public class MapUnit
     {
-        pos.x = x;
-        pos.y = y;
-        type = UnitType.defaultType;
-        ChangeCanPlaceOperator();
-    }
-    public MapUnit(Vector2 Pos)
-    {
-        pos = Pos;
-        type = UnitType.defaultType;
-        ChangeCanPlaceOperator();
-    }
-    public MapUnit(int x, int y, UnitType Type)
-    {
-        pos.x = x;
-        pos.y = y;
-        type = Type;
-        ChangeCanPlaceOperator();
-    }
-    public MapUnit(Vector2 Pos, UnitType Type)
-    {
-        pos = Pos;
-        type = Type;
-        ChangeCanPlaceOperator();
+        public static UnitType IntToUnitType(int value)
+        {
+            if (value == 0)
+                return UnitType.defaultType;
+            else if (value == 1)
+                return UnitType.blank;
+            else if (value == 2)
+                return UnitType.type1;
+            else if (value == 3)
+                return UnitType.type2;
+            return UnitType.blank;
+        }
+        public Vector2 pos;
+
+        private UnitType type;
+
+        public float f, g, h;
+
+        public MapUnit father;
+
+        public bool canPlaceOperator { get; private set; }
+        public bool canEnermyPass { get; private set; }
+
+        public void SwitchType(UnitType Type)
+        {
+            type = Type;
+            ChangeCanPlaceOperator();
+        }
+
+        /// <summary>
+        /// ÉèÖÃÄ³ÖÖ¸ñ×ÓÀàĞÍÄÜ²»ÄÜ·ÅÖÃ¸ÉÔ±£¬ÄÜ²»ÄÜÊ¹µĞÈË¾­¹ı
+        /// </summary>
+        void ChangeCanPlaceOperator()
+        {
+            switch(type)
+            {
+                case UnitType.defaultType:
+                    canPlaceOperator = false;
+                    canEnermyPass = true;
+                    break;
+                case UnitType.blank:
+                    canPlaceOperator = false;
+                    canEnermyPass = false;
+                    break;
+                case UnitType.type1:
+                    canPlaceOperator = true;
+                    canEnermyPass = false;
+                    break;
+                case UnitType.type2:
+                    canPlaceOperator = false;
+                    canEnermyPass = true;
+                    break;
+                default:
+                    Debug.LogErrorFormat("¸ñ×Ó{0}Ã»ÓĞµÄÀàĞÍÎª{1}£¬¸ÃÀàĞÍ²»´æÔÚ", pos, type);
+                    break;
+            }
+        }
+        public UnitType GetUnitType()
+        {
+            return type;
+        }
+
+        public MapUnit()
+        {
+
+        }
+        public MapUnit(int x, int y)
+        {
+            pos.x = x;
+            pos.y = y;
+            type = UnitType.defaultType;
+            ChangeCanPlaceOperator();
+        }
+        public MapUnit(Vector2 Pos)
+        {
+            pos = Pos;
+            type = UnitType.defaultType;
+            ChangeCanPlaceOperator();
+        }
+        public MapUnit(int x, int y, UnitType Type)
+        {
+            pos.x = x;
+            pos.y = y;
+            type = Type;
+            ChangeCanPlaceOperator();
+        }
+        public MapUnit(Vector2 Pos, UnitType Type)
+        {
+            pos = Pos;
+            type = Type;
+            ChangeCanPlaceOperator();
+        }
     }
 }
