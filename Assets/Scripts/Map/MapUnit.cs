@@ -92,7 +92,7 @@ namespace Map
                     break;
                 case UnitType.type2:
                     canPlaceOperator = false;
-                    canEnermyPass = true;
+                    canEnermyPass = false;
                     break;
                 default:
                     Debug.LogErrorFormat("格子{0}没有的类型为{1}，该类型不存在", pos, type);

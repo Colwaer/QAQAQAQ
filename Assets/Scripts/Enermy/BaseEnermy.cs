@@ -10,6 +10,8 @@ namespace Battle
         List<Vector2> path = new List<Vector2>();
 
         public bool isAttacking;
+        public bool isMoving;
+        public bool isIdling;
 
         LayerMask operatorLayer;
 
@@ -22,6 +24,7 @@ namespace Battle
         public float moveSpeed = 3.0f;
 
         Rigidbody2D rb;
+        Animator animator;
 
         private void Start()
         {
@@ -30,6 +33,7 @@ namespace Battle
 
             operatorLayer = LayerMask.GetMask("Operator");
             rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
             m_attackDistance = 1.5f;
 
             GetPath();
@@ -47,10 +51,14 @@ namespace Battle
 
         virtual protected void Move()
         {
-            if (!isAttacking)
+            if (isMoving && !isAttacking)
             {
                 if (path.Count == 0)
                     return;
+                isMoving = true;
+                animator.SetBool("isMoving", true);
+                animator.SetBool("isAttacking", false);
+                
                 if (((Vector2)transform.position - path[0]).magnitude > 0.05f)
                 {
                     lookDir = (path[0] - (Vector2)transform.position).normalized;
@@ -71,25 +79,46 @@ namespace Battle
         }
         virtual protected void Attack()
         {
+            
             RaycastHit2D hit = Physics2D.Raycast(transform.position, lookDir, m_attackDistance, operatorLayer);
             
             if (hit.collider != null)
             {
-                isAttacking = true;
+                
+                
                 if (attackTimer >= m_attackInterval)
                 {
+                    isMoving = false;
+                    isAttacking = true;
+                    isIdling = false;
+                    animator.SetBool("isMoving", false);
+                    animator.SetBool("isAttacking", true);
+                    animator.SetBool("isIdling", false);
+
                     attackTimer = 0;
- 
+                    
                     Debug.Log("Attack");
                 }
                 else
                 {
+                    isAttacking = false;
+                    isIdling = true;
+                    animator.SetBool("isIdling", true);
+                    animator.SetBool("isAttacking", false);
+
+
                     attackTimer += Time.deltaTime;
+
                 }
             }
             else
             {                
                 isAttacking = false;
+                isMoving = true;
+                isIdling = false;
+                animator.SetBool("isAttacking", false);
+                animator.SetBool("isMoving", true);
+                animator.SetBool("isIdling", false);
                 attackTimer = m_attackInterval;
             }
         }

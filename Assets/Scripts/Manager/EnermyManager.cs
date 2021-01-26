@@ -4,7 +4,7 @@ using UnityEngine;
 using Map;
 
 
-public class EnermyManager : MonoBehaviour
+public class EnermyManager : Singleton<EnermyManager>
 {
     MapEntity mapEntity;
 
@@ -16,7 +16,7 @@ public class EnermyManager : MonoBehaviour
 
     private void Start()
     {
-        enermy = Resources.Load("Prefabs/Enermy/Enermy") as GameObject;
+        enermy = Resources.Load("Prefabs/Enermy/Dog") as GameObject;
         
     }
     private void Update()
@@ -34,7 +34,10 @@ public class EnermyManager : MonoBehaviour
     }
     void SpawnEnermy()
     {
-        StartCoroutine(spawnEnermy());
+        GameObject t = Instantiate(enermy);
+        t.transform.position = mapEntity.StartPos;
+        enermies.Add(t);
+        //StartCoroutine(spawnEnermy());
     }
     IEnumerator spawnEnermy()
     {
