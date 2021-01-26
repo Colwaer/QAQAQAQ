@@ -15,8 +15,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Operator
+  - Enermy
   - 
   - 
   - 
@@ -45,4 +45,7 @@ TagManager:
     locked: 0
   - name: DrawMapIndicator
     uniqueID: 857794063
+    locked: 0
+  - name: Operator
+    uniqueID: 2309237185
     locked: 0
