@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Map
@@ -58,6 +59,7 @@ namespace Map
 
         public MapUnit father;
 
+
         public bool canPlaceOperator { get; private set; }
         public bool canEnermyPass { get; private set; }
 
@@ -66,6 +68,8 @@ namespace Map
             type = Type;
             ChangeCanPlaceOperator();
         }
+
+        
 
         /// <summary>
         /// 设置某种格子类型能不能放置干员，能不能使敌人经过
@@ -84,7 +88,7 @@ namespace Map
                     break;
                 case UnitType.type1:
                     canPlaceOperator = true;
-                    canEnermyPass = false;
+                    canEnermyPass = true;
                     break;
                 case UnitType.type2:
                     canPlaceOperator = false;

@@ -13,13 +13,16 @@ namespace Battle
         private float m_defend;
         private float m_magicDamage;
         private float m_magicDefend;
+
+
         public Action DieEvent;
         public float Health
         {
             get { return Health; }
             private set
             {
-                if(value <=0) DieEvent();
+                if (value <= 0) 
+                    DieEvent();
                 Health = value;
             }
         }
@@ -40,22 +43,19 @@ namespace Battle
             switch (kind)
             {
                 case AttackKind.Physics:
-                    delta = Mathf.Min(0,delta + m_defend);
+                    delta = Mathf.Min(0, delta + m_defend);
                     break;
                 case AttackKind.Magic:
-                    delta = Mathf.Min(0,delta + m_magicDefend);
+                    delta = Mathf.Min(0, delta + m_magicDefend);
                     break;
                 case AttackKind.Real:
-                    delta = Mathf.Min(0,delta);
+                    delta = Mathf.Min(0, delta);
                     break;
             }
             Health = Mathf.Max(0,delta + Health);
         }
     
-        virtual protected void Attack()
-        {
-
-        }
+        
         
     }
 }
