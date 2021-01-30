@@ -2,6 +2,14 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+public enum UnitType
+{
+    defaultType,
+    blank,
+    type1,
+    type2,
+
+}
 namespace Map
 {
     public class MapEntity
@@ -29,14 +37,7 @@ namespace Map
             }
         }
     }
-    public enum UnitType
-    {
-        defaultType,
-        blank,
-        type1,
-        type2,
 
-    }
     public class MapUnit
     {
         public static UnitType IntToUnitType(int value)

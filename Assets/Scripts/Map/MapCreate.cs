@@ -5,15 +5,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using System.IO;
 using UnityEngine.UI;
+using Battle;
 namespace Map
 {
-    public class MapCreate : MonoBehaviour
+    public class MapCreate : Singleton<MapCreate>
     {
         public GameObject mouseIndicator;
         string savePath;
 
         public MapEntity mapEntity;
         public GameObject[] MapUnitPres;
+
         //List<Sprite> MapUnitSprites = new List<Sprite>();
 
         //所有已经绘制的格子的副本
@@ -34,7 +36,6 @@ namespace Map
         public bool isEditing;
         public bool isSetingStartPos;
         public bool isSetingEndPos;
-
         //取整后的坐标
         Vector2 MousePosition;
 
@@ -43,11 +44,10 @@ namespace Map
         {
             savePath = Path.Combine(Application.persistentDataPath, "saveFile");
             mapEntity = new MapEntity(xMax, yMax, Vector2.zero, Vector2.zero);
+            MapInSceneManager.Instance.Init(xMax, yMax);
             Gizmos.color = Color.red;
             mouseIndicator = Instantiate(mouseIndicator);
             mouseIndicator.transform.position = Vector2.zero;
-
-
         }
 
         private void Update()
@@ -68,6 +68,7 @@ namespace Map
             {
                 SetEndPos();
             }
+            
 
         }
         bool IsShelter()
@@ -116,15 +117,15 @@ namespace Map
                 if (!IsMousePosInMap())
                     return;
                 mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].SwitchType(mapUnitType);
-
                 GameObject t;
                 t = Instantiate(MapUnitPres[(int)mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].GetUnitType()]);
                 t.transform.position = mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].pos;
-
+                t.GetComponent<DefaultType>().Init();
                 UnitCopies.Add(t);
                 
             }
         }
+
         void SetStartPos()
         {
             if (Input.GetMouseButtonDown(0))
@@ -164,6 +165,7 @@ namespace Map
                     GameObject t;
                     t = Instantiate(MapUnitPres[(int)mapEntity.Map[i][j].GetUnitType()]);
                     t.transform.position = mapEntity.Map[i][j].pos;
+                    t.GetComponent<MapUnitPre>().Init();
                     UnitCopies.Add(t);
                 }
             }
@@ -189,8 +191,9 @@ namespace Map
         {
             isSetingEndPos = true;
             isSetingStartPos = false;
-            isEditing = false;     
+            isEditing = false;
         }
+
         public void Save()
         {
             MapSaver.Save(savePath,mapEntity);
@@ -200,6 +203,7 @@ namespace Map
             MapSaver.Load(savePath, mapEntity);
 
             //load以后的小处理
+            MapInSceneManager.Instance.Init(mapEntity.xMax, mapEntity.yMax);
             startPosText.text = "起点坐标:" + mapEntity.StartPos.x + "," + mapEntity.StartPos.y;
             endPosText.text = "终点坐标:" + mapEntity.EndPos.x + "," + mapEntity.EndPos.y;
             DrawMap();

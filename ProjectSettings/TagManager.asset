@@ -6,6 +6,7 @@ TagManager:
   tags:
   - MapCreator
   - SearchManager
+  - Enermy
   layers:
   - Default
   - TransparentFX

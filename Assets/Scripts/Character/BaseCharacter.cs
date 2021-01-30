@@ -38,7 +38,7 @@ namespace Battle
         {
             Health = Mathf.Min(m_maxHelath, delta + Health);
         }
-        virtual protected void Hurt(float delta,AttackKind kind)
+        virtual protected void Hurt(float delta, AttackKind kind)
         {
             switch (kind)
             {

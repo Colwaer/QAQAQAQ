@@ -47,6 +47,11 @@ namespace Battle
         {           
             Move();
             Attack();
+
+        }
+        private void OnDestroy()
+        {
+            
         }
 
         virtual protected void Move()
@@ -83,9 +88,7 @@ namespace Battle
             RaycastHit2D hit = Physics2D.Raycast(transform.position, lookDir, m_attackDistance, operatorLayer);
             
             if (hit.collider != null)
-            {
-                
-                
+            {            
                 if (attackTimer >= m_attackInterval)
                 {
                     isMoving = false;
