@@ -92,7 +92,7 @@ namespace Map
                     canEnermyPass = true;
                     break;
                 case UnitType.type2:
-                    canPlaceOperator = false;
+                    canPlaceOperator = true;
                     canEnermyPass = false;
                     break;
                 default:

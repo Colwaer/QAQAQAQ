@@ -15,13 +15,27 @@ namespace Battle
 
         List<BaseEnermy> enermies;
 
+        float broadCastTimer = 0;
+        float broadCastTime = 0.7f;
+
         public Action<List<BaseEnermy>> enermyEnter;
         public Action<BaseEnermy> enermyExit;
 
         private void Awake()
         {
             enermies = new List<BaseEnermy>();
-            
+            broadCastTime = 0.7f;
+
+        }
+        private void Update()
+        {
+            broadCastTime += Time.deltaTime;
+            if (broadCastTime >= broadCastTimer)
+            {
+                if (enermyEnter != null)
+                    enermyEnter(enermies);
+                broadCastTime = 0;
+            }
         }
         public void Init()
         {
@@ -47,7 +61,7 @@ namespace Battle
         //***********************************************************************************************************
         virtual protected void OnTriggerEnter2D(Collider2D collision)
         {
-            
+            broadCastTime = 0;
             if (collision.tag == "Enermy" && !enermies.Contains(collision.gameObject.GetComponent<BaseEnermy>()))
             {
                 RemoveNull();
@@ -56,6 +70,7 @@ namespace Battle
                     enermyEnter(enermies);
             }
         }
+        
         virtual protected void OnTriggerExit2D(Collider2D collision)
         {
             

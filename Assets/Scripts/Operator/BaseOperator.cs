@@ -20,6 +20,9 @@ namespace Battle
         List<BaseEnermy> enermiesInAttackAreas;
         BaseEnermy currentAttackTarget;
 
+        public GameObject attackAreaIndicator;
+        List<GameObject> attackAreaIndicatorList;
+
         Vector2[] attackAreasPos;
 
         private float m_attackInterval;
@@ -50,6 +53,8 @@ namespace Battle
 
             attackAreas = new List<MapUnitPre>();
             enermiesInAttackAreas = new List<BaseEnermy>();
+            attackAreaIndicatorList = new List<GameObject>();
+
             attackAreasPos = new Vector2[] { new Vector2(1, 0), new Vector2(-1, 0),
             new Vector2(1, 1), new Vector2(-1, 1), new Vector2(0, 1), new Vector2(0, 2) };
         }
@@ -66,6 +71,7 @@ namespace Battle
             {
                 Attack();
             }
+
         }
         void RemoveNull()
         {
@@ -75,6 +81,8 @@ namespace Battle
                     enermiesInAttackAreas.RemoveAt(i);
             }
         }
+        
+
 
         void CalCurrentAttackTarget()
         {
@@ -127,6 +135,26 @@ namespace Battle
 
         }
 
+        public void ShowAttackArea()
+        {
+            foreach (Vector2 item in attackAreasPos)
+            {
+                GameObject t = Instantiate(attackAreaIndicator);
+                t.transform.position = item + (Vector2)transform.position;
+                attackAreaIndicatorList.Add(t);
+            }
+        }
+        public void OffShowAttackArea()
+        {
+            if (attackAreaIndicatorList.Count == 0)
+                return;
+            foreach (GameObject t in attackAreaIndicatorList)
+            {
+                Destroy(t);
+            }
+            attackAreaIndicatorList.Clear();
+        }
+        //init此处只有设置监听的作用
         public void Init(PlaceDirection dir)
         {
             placeDirection = dir;
@@ -165,7 +193,7 @@ namespace Battle
                 if (!enermiesInAttackAreas.Contains(item))
                 {
                     enermiesInAttackAreas.Add(item);
-                    Debug.LogFormat("add{0}",item);
+                    //Debug.LogFormat("add{0}",item);
                 }
                     
             }
@@ -180,8 +208,12 @@ namespace Battle
         }
         virtual public void SetAttackAreas(PlaceDirection dir)
         {
+            attackAreas.Clear();
+            
+            attackAreasPos = new Vector2[] { new Vector2(1, 0), new Vector2(-1, 0),
+            new Vector2(1, 1), new Vector2(-1, 1), new Vector2(0, 1), new Vector2(0, 2) };
 
-            switch(dir)
+            switch (dir)
             {
                 case PlaceDirection.up:
                     break;
@@ -208,6 +240,7 @@ namespace Battle
                         float yTmp = attackAreasPos[i].y;
                         attackAreasPos[i].x = yTmp;
                         attackAreasPos[i].y = xTmp;
+                        //Debug.Log(attackAreasPos[i]);
                     }
                     break;
                 default:

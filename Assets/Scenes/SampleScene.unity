@@ -1472,6 +1472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2585ed4bf0e1b44828efc5726c43d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enermy: {fileID: 6264829371792928653, guid: 220498637047e0c4fb6064aab845b601, type: 3}
 --- !u!4 &553415229
 Transform:
   m_ObjectHideFlags: 0
@@ -3245,6 +3246,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   operatorPres:
   - {fileID: 4665164724442171506, guid: 6451b9080503f5f4b83a296106fb640d, type: 3}
+  dirChoosePanelPre: {fileID: 6221561179838815892, guid: b4bf68d84540c144a80bc0968a6f8257,
+    type: 3}
 --- !u!4 &1687381941
 Transform:
   m_ObjectHideFlags: 0

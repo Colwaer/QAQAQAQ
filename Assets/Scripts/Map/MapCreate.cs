@@ -111,6 +111,8 @@ namespace Map
         }
         void EditMap()
         {
+            if (PlaceManager.Instance.isPlacingOperator)
+                return;
             if (Input.GetMouseButtonDown(0))
             {
                 //如果不在地图范围内则退出
@@ -120,9 +122,14 @@ namespace Map
                 GameObject t;
                 t = Instantiate(MapUnitPres[(int)mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].GetUnitType()]);
                 t.transform.position = mapEntity.Map[(int)MousePosition.x][(int)MousePosition.y].pos;
-                t.GetComponent<DefaultType>().Init();
-                UnitCopies.Add(t);
-                
+                t.GetComponent<MapUnitPre>().Init();
+
+                MapInSceneManager.Instance.SetMapUnitPre(
+                    (int)t.transform.position.x, (int)t.transform.position.y, t.GetComponent<MapUnitPre>());
+
+                Debug.Log(MapInSceneManager.Instance.GetMapUnitPre((int)t.transform.position.x, (int)t.transform.position.y).type);
+
+                UnitCopies.Add(t);               
             }
         }
 

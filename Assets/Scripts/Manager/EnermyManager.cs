@@ -8,7 +8,7 @@ public class EnermyManager : Singleton<EnermyManager>
 {
     MapEntity mapEntity;
 
-    GameObject enermy;
+    public GameObject enermy;
 
     List<GameObject> enermies = new List<GameObject>();
 
@@ -16,7 +16,7 @@ public class EnermyManager : Singleton<EnermyManager>
 
     private void Start()
     {
-        enermy = Resources.Load("Prefabs/Enermy/Dog") as GameObject;
+        //enermy = Resources.Load("Prefabs/Enermy/Dog") as GameObject;
         
     }
     private void Update()

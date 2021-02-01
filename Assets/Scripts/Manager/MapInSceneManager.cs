@@ -5,7 +5,7 @@ using Battle;
 
 public class MapInSceneManager : Singleton<MapInSceneManager>
 {
-    public List<List<MapUnitPre>> mapUnitsOnScene = new List<List<MapUnitPre>>();
+    private List<List<MapUnitPre>> mapUnitsOnScene = new List<List<MapUnitPre>>();
 
     public int xMax;
     public int yMax;
@@ -36,5 +36,9 @@ public class MapInSceneManager : Singleton<MapInSceneManager>
             return null;
         return mapUnitsOnScene[x][y];
         
+    }
+    public void SetMapUnitPre(int x, int y, MapUnitPre t)
+    {
+        mapUnitsOnScene[x][y] = t;
     }
 }

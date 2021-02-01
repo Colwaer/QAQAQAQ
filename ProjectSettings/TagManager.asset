@@ -50,3 +50,6 @@ TagManager:
   - name: Operator
     uniqueID: 2309237185
     locked: 0
+  - name: InGameUI
+    uniqueID: 3655272447
+    locked: 0
