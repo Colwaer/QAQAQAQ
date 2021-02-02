@@ -7,6 +7,7 @@ TagManager:
   - MapCreator
   - SearchManager
   - Enermy
+  - Operator
   layers:
   - Default
   - TransparentFX

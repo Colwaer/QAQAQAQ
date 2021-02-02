@@ -3,12 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Battle
 {
-
+    public enum PlaceDirection
+    {
+        up,
+        down,
+        left,
+        right
+    }
 
     public class PlaceManager : Singleton<PlaceManager>
     {
         //取整后的坐标
-        Vector2 MousePosition;
+        public Vector2 MousePosition;
 
         public GameObject[] operatorPres;
         public GameObject dirChoosePanelPre;
@@ -21,7 +27,7 @@ namespace Battle
 
         PlaceDirection dir;
 
-        public bool isPlacingOperator { get; private set; }
+        public bool IsPlacingOperator { get; set; }
         bool showAttackAreaPreview = false;
 
         private void Start()
@@ -43,7 +49,7 @@ namespace Battle
                 }
             }
 
-            if (isPlacingOperator)
+            if (IsPlacingOperator)
             {
                 PlaceOperator();
             }
@@ -56,7 +62,7 @@ namespace Battle
             Destroy(curDirChoosePanel);
             curOperator.GetComponent<BaseOperator>().OffShowAttackArea();
             showAttackAreaPreview = false;
-            isPlacingOperator = false;
+            IsPlacingOperator = false;
         }
         void PlaceOperator()
         {
@@ -76,7 +82,7 @@ namespace Battle
 
                 ShowChooseDirPanel();
 
-                isPlacingOperator = false;
+                IsPlacingOperator = false;
             }
         }
         void ShowChooseDirPanel()
@@ -115,7 +121,7 @@ namespace Battle
                     //Debug.Log("right");
                     curOperator.GetComponent<BaseOperator>().OffShowAttackArea();
                     dir = PlaceDirection.right;
-                    curOperator.GetComponent<BaseOperator>().SetAttackAreas(PlaceDirection.right);
+                    curOperator.GetComponent<BaseOperator>().Init(PlaceDirection.right);
                     curOperator.GetComponent<BaseOperator>().ShowAttackArea();
                 }
                 
@@ -127,7 +133,7 @@ namespace Battle
                     //Debug.Log("up");
                     curOperator.GetComponent<BaseOperator>().OffShowAttackArea();
                     dir = PlaceDirection.up;
-                    curOperator.GetComponent<BaseOperator>().SetAttackAreas(PlaceDirection.up);
+                    curOperator.GetComponent<BaseOperator>().Init(PlaceDirection.up);
                     curOperator.GetComponent<BaseOperator>().ShowAttackArea();
                 }
                 
@@ -139,7 +145,7 @@ namespace Battle
                     //Debug.Log("left");
                     curOperator.GetComponent<BaseOperator>().OffShowAttackArea();
                     dir = PlaceDirection.left;
-                    curOperator.GetComponent<BaseOperator>().SetAttackAreas(PlaceDirection.left);
+                    curOperator.GetComponent<BaseOperator>().Init(PlaceDirection.left);
                     curOperator.GetComponent<BaseOperator>().ShowAttackArea();
                 }
                 
@@ -151,7 +157,7 @@ namespace Battle
                     //Debug.Log("down");
                     curOperator.GetComponent<BaseOperator>().OffShowAttackArea();
                     dir = PlaceDirection.down;
-                    curOperator.GetComponent<BaseOperator>().SetAttackAreas(PlaceDirection.down);
+                    curOperator.GetComponent<BaseOperator>().Init(PlaceDirection.down);
                     curOperator.GetComponent<BaseOperator>().ShowAttackArea();
                 }              
             }
@@ -184,7 +190,7 @@ namespace Battle
             xMax = MapInSceneManager.Instance.xMax;
             yMax = MapInSceneManager.Instance.yMax;
 
-            isPlacingOperator = true;
+            IsPlacingOperator = true;
         }
 
         

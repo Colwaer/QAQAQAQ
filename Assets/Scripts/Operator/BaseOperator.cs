@@ -5,14 +5,6 @@ using Map;
 
 namespace Battle
 {
-    public enum PlaceDirection
-    {
-        up,
-        down,
-        left,
-        right
-    }
-
     public class BaseOperator : BaseCharacter
     {
         List<MapUnitPre> attackAreas;
@@ -69,6 +61,7 @@ namespace Battle
         {
             if (isInited)
             {
+                
                 Attack();
             }
 
@@ -82,7 +75,8 @@ namespace Battle
             }
         }
         
-
+        virtual public void ShowDirChoosePanel() { Debug.Log("enter father"); }
+        virtual public void OffShowDirChoosePanel() { }
 
         void CalCurrentAttackTarget()
         {
@@ -171,11 +165,22 @@ namespace Battle
         }
         void SetListener()
         {
+            //attackAreas.Clear();
             foreach(MapUnitPre item in attackAreas)
             {
-                Debug.Log(item.transform.position);
+                //Debug.Log(item.transform.position);
                 item.enermyEnter += AddEnermy;
                 item.enermyExit += RemoveEnermy;
+            }
+        }
+        void RemoveListener()
+        {
+            
+            foreach (MapUnitPre item in attackAreas)
+            {
+                //Debug.Log(item.transform.position);
+                item.enermyEnter -= AddEnermy;
+                item.enermyExit -= RemoveEnermy;
             }
         }
         private void OnDestroy()
@@ -208,6 +213,9 @@ namespace Battle
         }
         virtual public void SetAttackAreas(PlaceDirection dir)
         {
+            enermiesInAttackAreas.Clear();
+            currentAttackTarget = null;
+            RemoveListener();
             attackAreas.Clear();
             
             attackAreasPos = new Vector2[] { new Vector2(1, 0), new Vector2(-1, 0),
@@ -255,6 +263,7 @@ namespace Battle
                     attackAreas.Add(t);
                 }
             }
+            
         }
     }
 }

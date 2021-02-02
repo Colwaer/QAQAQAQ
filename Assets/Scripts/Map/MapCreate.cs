@@ -40,6 +40,7 @@ namespace Map
         Vector2 MousePosition;
 
 
+
         private void Start()
         {
             savePath = Path.Combine(Application.persistentDataPath, "saveFile");
@@ -111,7 +112,7 @@ namespace Map
         }
         void EditMap()
         {
-            if (PlaceManager.Instance.isPlacingOperator)
+            if (PlaceManager.Instance.IsPlacingOperator)
                 return;
             if (Input.GetMouseButtonDown(0))
             {
@@ -181,7 +182,12 @@ namespace Map
         {
             SceneManager.LoadScene(0);
         }
-
+        public void ForbidAllBools()
+        {
+            isEditing = false;
+            isSetingStartPos = false;
+            isSetingEndPos = false;
+        }
         public void Edit()
         {
             isEditing = true;

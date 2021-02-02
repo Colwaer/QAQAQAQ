@@ -1,11 +1,9 @@
 fileFormatVersion: 2
-guid: e8fbd8733c7bb8c44886a033332538b7
+guid: 5e8fda1ca7e7ce248b9927265827df09
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - attackAreaIndicator: {fileID: 2313269790422694732, guid: 7641169183df22c4a891eb11a45d2d45,
-      type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
