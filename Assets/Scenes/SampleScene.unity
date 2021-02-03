@@ -1473,6 +1473,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enermy: {fileID: 6264829371792928653, guid: 220498637047e0c4fb6064aab845b601, type: 3}
+  enermies: []
+  getMap: 103
 --- !u!4 &553415229
 Transform:
   m_ObjectHideFlags: 0
@@ -1745,7 +1747,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 283.7}
+  m_AnchoredPosition: {x: 0, y: 192.1}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &688666890

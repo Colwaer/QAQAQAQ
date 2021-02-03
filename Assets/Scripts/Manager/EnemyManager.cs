@@ -4,13 +4,13 @@ using UnityEngine;
 using Map;
 
 
-public class EnermyManager : Singleton<EnermyManager>
+public class EnemyManager : Singleton<EnemyManager>
 {
     MapEntity mapEntity;
 
-    public GameObject enermy;
+    public GameObject enemy;
 
-    List<GameObject> enermies = new List<GameObject>();
+    List<GameObject> enemies = new List<GameObject>();
 
     KeyCode getMap = KeyCode.G;
 
@@ -34,29 +34,29 @@ public class EnermyManager : Singleton<EnermyManager>
     }
     void SpawnEnermy()
     {
-        GameObject t = Instantiate(enermy);
+        GameObject t = Instantiate(enemy);
         t.transform.position = mapEntity.StartPos;
-        enermies.Add(t);
+        enemies.Add(t);
         //StartCoroutine(spawnEnermy());
     }
     IEnumerator spawnEnermy()
     {
         yield return new WaitForSeconds(0.2f);
-        GameObject t = Instantiate(enermy);
+        GameObject t = Instantiate(enemy);
         t.transform.position = mapEntity.StartPos;
-        enermies.Add(t);
+        enemies.Add(t);
         yield return new WaitForSeconds(2.0f);
-        t = Instantiate(enermy);
+        t = Instantiate(enemy);
         t.transform.position = mapEntity.StartPos;
-        enermies.Add(t);
+        enemies.Add(t);
         yield return new WaitForSeconds(2.0f);
-        t = Instantiate(enermy);
+        t = Instantiate(enemy);
         t.transform.position = mapEntity.StartPos;
-        enermies.Add(t);
+        enemies.Add(t);
         yield return new WaitForSeconds(2.0f);
-        t = Instantiate(enermy);
+        t = Instantiate(enemy);
         t.transform.position = mapEntity.StartPos;
-        enermies.Add(t);
+        enemies.Add(t);
 
         yield return new WaitForSeconds(2.0f);
     }

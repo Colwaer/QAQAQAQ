@@ -5,7 +5,7 @@ using Map;
 
 namespace Battle
 {
-    public class BaseEnermy : BaseCharacter
+    public class BaseEnemy : BaseCharacter
     {
         List<Vector2> path = new List<Vector2>();
 
@@ -132,7 +132,7 @@ namespace Battle
             path = temp;
         }
 
-        public BaseEnermy(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance) 
+        public BaseEnemy(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance) 
             : base(attack, defend, magicDamage, magicDefend, maxHelath)
         {
             m_attackDistance = attackDistance;

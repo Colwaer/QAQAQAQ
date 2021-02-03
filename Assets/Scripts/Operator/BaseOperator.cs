@@ -9,8 +9,8 @@ namespace Battle
     {
         List<MapUnitPre> attackAreas;
 
-        List<BaseEnermy> enermiesInAttackAreas;
-        BaseEnermy currentAttackTarget;
+        List<BaseEnemy> enemiesInAttackAreas;
+        BaseEnemy currentAttackTarget;
 
         public GameObject attackAreaIndicator;
         List<GameObject> attackAreaIndicatorList;
@@ -44,7 +44,7 @@ namespace Battle
             animator = GetComponent<Animator>();
 
             attackAreas = new List<MapUnitPre>();
-            enermiesInAttackAreas = new List<BaseEnermy>();
+            enemiesInAttackAreas = new List<BaseEnemy>();
             attackAreaIndicatorList = new List<GameObject>();
 
             attackAreasPos = new Vector2[] { new Vector2(1, 0), new Vector2(-1, 0),
@@ -68,10 +68,10 @@ namespace Battle
         }
         void RemoveNull()
         {
-            for (int i = 0; i < enermiesInAttackAreas.Count; i++)
+            for (int i = 0; i < enemiesInAttackAreas.Count; i++)
             {
-                if (enermiesInAttackAreas[i] == null)
-                    enermiesInAttackAreas.RemoveAt(i);
+                if (enemiesInAttackAreas[i] == null)
+                    enemiesInAttackAreas.RemoveAt(i);
             }
         }
         
@@ -81,13 +81,13 @@ namespace Battle
         void CalCurrentAttackTarget()
         {
             RemoveNull();
-            if (enermiesInAttackAreas.Count == 0)
+            if (enemiesInAttackAreas.Count == 0)
                 currentAttackTarget = null;
-            if (enermiesInAttackAreas.Count == 1)
-                currentAttackTarget = enermiesInAttackAreas[0];
+            if (enemiesInAttackAreas.Count == 1)
+                currentAttackTarget = enemiesInAttackAreas[0];
             float distance = float.MaxValue;
-            BaseEnermy target;
-            foreach(BaseEnermy item in enermiesInAttackAreas)
+            BaseEnemy target;
+            foreach(BaseEnemy item in enemiesInAttackAreas)
             {
                 float tmpDistance = (item.transform.position - transform.position).magnitude;
                 if (tmpDistance < distance)
@@ -169,8 +169,8 @@ namespace Battle
             foreach(MapUnitPre item in attackAreas)
             {
                 //Debug.Log(item.transform.position);
-                item.enermyEnter += AddEnermy;
-                item.enermyExit += RemoveEnermy;
+                item.enemyEnter += AddEnermy;
+                item.enemyExit += RemoveEnermy;
             }
         }
         void RemoveListener()
@@ -179,41 +179,41 @@ namespace Battle
             foreach (MapUnitPre item in attackAreas)
             {
                 //Debug.Log(item.transform.position);
-                item.enermyEnter -= AddEnermy;
-                item.enermyExit -= RemoveEnermy;
+                item.enemyEnter -= AddEnermy;
+                item.enemyExit -= RemoveEnermy;
             }
         }
         private void OnDestroy()
         {
             foreach (MapUnitPre item in attackAreas)
             {
-                item.enermyEnter -= AddEnermy;
-                item.enermyExit -= RemoveEnermy;
+                item.enemyEnter -= AddEnermy;
+                item.enemyExit -= RemoveEnermy;
             }
         }
-        void AddEnermy(List<BaseEnermy> enermyList)
+        void AddEnermy(List<BaseEnemy> enermyList)
         {
-            foreach(BaseEnermy item in enermyList)
+            foreach(BaseEnemy item in enermyList)
             {
-                if (!enermiesInAttackAreas.Contains(item))
+                if (!enemiesInAttackAreas.Contains(item))
                 {
-                    enermiesInAttackAreas.Add(item);
+                    enemiesInAttackAreas.Add(item);
                     //Debug.LogFormat("add{0}",item);
                 }
                     
             }
         }
-        void RemoveEnermy(BaseEnermy enermyToBeRemoved)
+        void RemoveEnermy(BaseEnemy enermyToBeRemoved)
         {
-            if (enermiesInAttackAreas.Contains(enermyToBeRemoved))
+            if (enemiesInAttackAreas.Contains(enermyToBeRemoved))
             {     
-                enermiesInAttackAreas.Remove(enermyToBeRemoved);
+                enemiesInAttackAreas.Remove(enermyToBeRemoved);
                 Debug.LogFormat("remove{0}", enermyToBeRemoved);
             }
         }
         virtual public void SetAttackAreas(PlaceDirection dir)
         {
-            enermiesInAttackAreas.Clear();
+            enemiesInAttackAreas.Clear();
             currentAttackTarget = null;
             RemoveListener();
             attackAreas.Clear();

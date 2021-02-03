@@ -7,23 +7,23 @@ using UnityEngine;
 namespace Battle
 {
 
-    public class MapUnitPre : MonoBehaviour, IEnumerable
+    public class MapUnitPre : MonoBehaviour
     {
         public UnitType type;
 
         public bool canPlaceOperator { get; protected set; }
 
-        List<BaseEnermy> enermies;
+        List<BaseEnemy> enemies;
 
         float broadCastTimer = 0;
         float broadCastTime = 0.7f;
 
-        public Action<List<BaseEnermy>> enermyEnter;
-        public Action<BaseEnermy> enermyExit;
+        public Action<List<BaseEnemy>> enemyEnter;
+        public Action<BaseEnemy> enemyExit;
 
         private void Awake()
         {
-            enermies = new List<BaseEnermy>();
+            enemies = new List<BaseEnemy>();
             broadCastTime = 0.7f;
 
         }
@@ -32,8 +32,8 @@ namespace Battle
             broadCastTime += Time.deltaTime;
             if (broadCastTime >= broadCastTimer)
             {
-                if (enermyEnter != null)
-                    enermyEnter(enermies);
+                if (enemyEnter != null)
+                    enemyEnter(enemies);
                 broadCastTime = 0;
             }
         }
@@ -41,19 +41,13 @@ namespace Battle
         {
             MapInSceneManager.Instance.MapUnitPreLoadToList((int)transform.position.x, (int)transform.position.y, this);
         }
-        public IEnumerator GetEnumerator()
-        {
-            for (int i = 0; i < enermies.Count; i++)
-            {
-                yield return enermies[i];
-            }
-        }
+
         void RemoveNull()
         {
-            for (int i = 0; i < enermies.Count; i++)
+            for (int i = 0; i < enemies.Count; i++)
             {
-                if (enermies[i] == null)
-                    enermies.RemoveAt(i);
+                if (enemies[i] == null)
+                    enemies.RemoveAt(i);
             }
         }
 
@@ -62,24 +56,24 @@ namespace Battle
         virtual protected void OnTriggerEnter2D(Collider2D collision)
         {
             broadCastTime = 0;
-            if (collision.tag == "Enermy" && !enermies.Contains(collision.gameObject.GetComponent<BaseEnermy>()))
+            if (collision.tag == "Enermy" && !enemies.Contains(collision.gameObject.GetComponent<BaseEnemy>()))
             {
                 RemoveNull();
-                enermies.Add(collision.gameObject.GetComponent<BaseEnermy>());
-                if (enermyEnter != null)
-                    enermyEnter(enermies);
+                enemies.Add(collision.gameObject.GetComponent<BaseEnemy>());
+                if (enemyEnter != null)
+                    enemyEnter(enemies);
             }
         }
         
         virtual protected void OnTriggerExit2D(Collider2D collision)
         {
             
-            if (collision.tag == "Enermy" && enermies.Contains(collision.gameObject.GetComponent<BaseEnermy>()))
+            if (collision.tag == "Enermy" && enemies.Contains(collision.gameObject.GetComponent<BaseEnemy>()))
             {
                 RemoveNull();
-                enermies.Remove(collision.gameObject.GetComponent<BaseEnermy>());
-                if (enermyExit != null)
-                    enermyExit(collision.gameObject.GetComponent<BaseEnermy>());
+                enemies.Remove(collision.gameObject.GetComponent<BaseEnemy>());
+                if (enemyExit != null)
+                    enemyExit(collision.gameObject.GetComponent<BaseEnemy>());
             }
         }
 

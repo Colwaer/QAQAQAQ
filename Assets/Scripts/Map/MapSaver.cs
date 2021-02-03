@@ -55,6 +55,11 @@ namespace Map
             using (
                 var reader = new BinaryReader(File.Open(savePath,FileMode.Open))
             ) {
+                if(reader == null)
+                {
+                    Debug.LogError("Could not open the file " + savePath);
+                    return;
+                }
                 int xCount = reader.ReadInt32();
                 int yCount = reader.ReadInt32();
                 entity.StartPos.x = reader.ReadSingle();

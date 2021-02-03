@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Battle;
 
-public class Dog : BaseEnermy
+public class Dog : BaseEnemy
 {
     
 
