@@ -40,4 +40,5 @@ public class MapInSceneManager : Singleton<MapInSceneManager>
     {
         mapUnitsOnScene[x][y] = t;
     }
+    
 }

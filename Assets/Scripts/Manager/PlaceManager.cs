@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.AsyncOperations;
+
 namespace Battle
 {
     public enum PlaceDirection
@@ -16,11 +20,19 @@ namespace Battle
         //取整后的坐标
         public Vector2 MousePosition;
 
+        public List<AssetReference> operators;
+
         public GameObject[] operatorPres;
+        bool m_AssetReady = false;
+        int m_ToLoadCount;
+        int m_CharacterIndex = 0;
+
+
         public GameObject dirChoosePanelPre;
         GameObject curDirChoosePanel;
         GameObject curOperator;
 
+        public Func<float, bool> OnPlaceOperator;
 
         int xMax;
         int yMax;
@@ -32,8 +44,13 @@ namespace Battle
 
         private void Start()
         {
-            
+            m_ToLoadCount = operators.Count;
+            foreach(var character in operators)
+            {
+                character.LoadAssetAsync<GameObject>().Completed += OnCharacterAssetLoaded;
+            }
         }
+
 
         private void Update()
         {
@@ -52,9 +69,14 @@ namespace Battle
             if (IsPlacingOperator)
             {
                 PlaceOperator();
-            }
-            
-            
+                
+            }       
+        }
+        void OnCharacterAssetLoaded(AsyncOperationHandle<GameObject> obj)
+        {
+            m_ToLoadCount--;
+            if (m_ToLoadCount <= 0)
+                m_AssetReady = true;
         }
         void DetermineOperatorDir()
         {
@@ -73,16 +95,39 @@ namespace Battle
             //Debug.Log("MousePosInMap");
             if (!MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator)
                 return;
+            
             if (Input.GetMouseButtonDown(0))
             {
-                //Debug.Log("Place Operator");
+                if (!m_AssetReady)
+                    return;
+                IsPlacingOperator = false;
+                if (!MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator)
+                    return;
 
-                curOperator = Instantiate(operatorPres[Random.Range(0, operatorPres.Length)]);
+                //Debug.Log("Place Operator");
+                
+                //**********************************************************************************************************
+                //此处为临时处理，之后做出来放置角色的UI面板这里要改
+                //临时处理导致每次修改干员花费时要修改prefab和干员脚本
+                curOperator = operatorPres[UnityEngine.Random.Range(0, operatorPres.Length)];
+
+                if (!OnPlaceOperator(curOperator.GetComponent<BaseOperator>().cost))
+                {
+                    Debug.LogWarning("cost too much");
+                    return;
+                }
+
+                curOperator = operators[m_CharacterIndex].InstantiateAsync().Result;
+
+                MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator = false;
+
+
+
                 curOperator.transform.position = MousePosition;
 
                 ShowChooseDirPanel();
 
-                IsPlacingOperator = false;
+                
             }
         }
         void ShowChooseDirPanel()

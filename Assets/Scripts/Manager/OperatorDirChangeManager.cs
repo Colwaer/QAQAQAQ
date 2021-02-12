@@ -61,6 +61,8 @@ public class OperatorDirChangeManager : Singleton<OperatorDirChangeManager>
         {           
             if (Input.GetMouseButtonDown(0))
             {
+                if (PlaceManager.Instance.IsPlacingOperator)
+                    return;
                 RayCast();
             }            
         }

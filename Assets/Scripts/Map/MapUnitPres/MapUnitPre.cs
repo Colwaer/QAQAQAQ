@@ -11,7 +11,7 @@ namespace Battle
     {
         public UnitType type;
 
-        public bool canPlaceOperator { get; protected set; }
+        public bool canPlaceOperator { get; set; }
 
         List<BaseEnemy> enemies;
 
@@ -35,6 +35,7 @@ namespace Battle
                 if (enemyEnter != null)
                     enemyEnter(enemies);
                 broadCastTime = 0;
+                
             }
         }
         public void Init()
@@ -64,7 +65,18 @@ namespace Battle
                     enemyEnter(enemies);
             }
         }
-        
+        /*
+        virtual protected void OnTriggerStay2D(Collider2D collision)
+        {
+            Debug.Log(collision.name);
+            if (collision.tag == "Enermy" && !enemies.Contains(collision.gameObject.GetComponent<BaseEnemy>()))
+            {
+                RemoveNull();
+                Debug.Log("Staying Add");
+                enemies.Add(collision.gameObject.GetComponent<BaseEnemy>());
+            }
+        }
+        */
         virtual protected void OnTriggerExit2D(Collider2D collision)
         {
             

@@ -9,6 +9,12 @@ public class Weedy : BaseOperator
 
     GameObject weedyDirChoosePanel;
 
+    protected override void Awake()
+    {
+        base.Awake();
+        cost = 3;
+    }
+
     public override void ShowDirChoosePanel()
     {
         weedyDirChoosePanel = Instantiate(weedyDirChoosePanelPre);

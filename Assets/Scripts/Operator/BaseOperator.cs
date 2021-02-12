@@ -23,6 +23,8 @@ namespace Battle
         public bool isIdling;
         public bool isAttacking;
 
+        public int cost;
+
         bool isInited;
 
         public PlaceDirection placeDirection;
@@ -35,8 +37,9 @@ namespace Battle
 
         }
         
-        private void Awake()
+        protected virtual void Awake()
         {
+            cost = 10;
             isIdling = true;
             isAttacking = false;
             m_attackInterval = 1.0f;
@@ -82,11 +85,19 @@ namespace Battle
         {
             RemoveNull();
             if (enemiesInAttackAreas.Count == 0)
+            {
                 currentAttackTarget = null;
+                return;
+            }
+                
             if (enemiesInAttackAreas.Count == 1)
+            {
                 currentAttackTarget = enemiesInAttackAreas[0];
+                return;
+            }
+                
             float distance = float.MaxValue;
-            BaseEnemy target;
+            BaseEnemy target = null;
             foreach(BaseEnemy item in enemiesInAttackAreas)
             {
                 float tmpDistance = (item.transform.position - transform.position).magnitude;
@@ -96,11 +107,14 @@ namespace Battle
                     target = item;
                 }
             }
+            currentAttackTarget = target;
         }
         void Attack()
         {
             if (currentAttackTarget == null)
             {
+                //Debug.Log("Idling");
+                //Debug.Log(enemiesInAttackAreas.Count);
                 isIdling = true;
                 isAttacking = false;
                 animator.SetBool("isIdling", true);
@@ -199,8 +213,7 @@ namespace Battle
                 {
                     enemiesInAttackAreas.Add(item);
                     //Debug.LogFormat("add{0}",item);
-                }
-                    
+                }         
             }
         }
         void RemoveEnermy(BaseEnemy enermyToBeRemoved)

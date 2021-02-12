@@ -145,6 +145,7 @@ MonoBehaviour:
     type: 3}
   isIdling: 0
   isAttacking: 0
+  cost: 3
   placeDirection: 0
   weedyDirChoosePanelPre: {fileID: 493430343887485328, guid: 8f8ca6bea9c38f04f947cd1d5ff12565,
     type: 3}
