@@ -13,10 +13,12 @@ namespace Battle
         public bool isMoving;
         public bool isIdling;
 
+        protected float attackDelayTime = 0.5f;
+
         LayerMask operatorLayer;
 
-        private float m_attackDistance = 1.5f;
-        private float m_attackInterval = 2.0f;
+        protected float m_attackDistance = 1.5f;
+        protected float m_attackInterval = 2.0f;
         private float attackTimer = 0;
 
         private Vector2 lookDir;
@@ -26,7 +28,11 @@ namespace Battle
         Rigidbody2D rb;
         Animator animator;
 
+        public GameObject dizzyEffect;
+
         BaseOperator attackTarget;
+
+        bool isDizzying = false;
 
 
         protected virtual void Start()
@@ -47,9 +53,18 @@ namespace Battle
                
         }
         private void FixedUpdate()
-        {           
-            Move();
-            Attack();
+        {         
+            
+            if (!isDizzying)
+            {
+                Move();
+                Attack();
+            }
+            else
+            {
+
+            }
+            
 
         }
         private void OnDestroy()
@@ -85,7 +100,7 @@ namespace Battle
             Gizmos.color = Color.red;
             Gizmos.DrawLine(transform.position, (Vector2)transform.position + lookDir * m_attackDistance);
         }
-        virtual protected void Attack()
+        void Attack()
         {
             
             RaycastHit2D hit = Physics2D.Raycast(transform.position, lookDir, m_attackDistance, operatorLayer);
@@ -106,9 +121,7 @@ namespace Battle
                     attackTimer = 0;
                     if (attackTarget != null)
                     {
-                        Debug.Log(attackTarget.Health);
-                        attackTarget.Hurt(m_attack, AttackKind.Physics);
-                        attackTarget.Hurt(m_magicDamage, AttackKind.Magic);                      
+                        StartCoroutine(IEAttack());              
                     }
                                          
                 }
@@ -135,6 +148,18 @@ namespace Battle
                 attackTimer = m_attackInterval;
             }
         }
+        IEnumerator IEAttack()
+        {
+            yield return new WaitForSeconds(attackDelayTime);
+            if (attackTarget != null)
+                AttackDetail();
+        }
+        protected virtual void AttackDetail()
+        {
+            attackTarget.Hurt(m_attack, AttackKind.Physics);
+            attackTarget.Hurt(m_magicDamage, AttackKind.Magic);
+        }
+
 
         public void GetPath()
         {
@@ -145,6 +170,28 @@ namespace Battle
         public BaseEnemy()
         {
             
+        }
+
+        public void Dizzy(float time)
+        {
+            isDizzying = true;
+            isMoving = false;
+            isIdling = true;
+            animator.SetBool("isMoving", false);
+            animator.SetBool("isIdling", true);
+            animator.SetBool("isAttacking", false);
+
+            dizzyEffect.SetActive(true);
+
+            StartCoroutine(IEDizzy(time));
+        }
+        IEnumerator IEDizzy(float time)
+        {
+            yield return new WaitForSeconds(time);
+            
+            isDizzying = false;
+
+            dizzyEffect.SetActive(false);
         }
     }
 }

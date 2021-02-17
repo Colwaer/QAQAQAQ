@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Map;
+using UnityEngine.UI;
 
 namespace Battle
 {
@@ -9,7 +11,7 @@ namespace Battle
     {
         List<MapUnitPre> attackAreas;
 
-        List<BaseEnemy> enemiesInAttackAreas;
+        protected List<BaseEnemy> enemiesInAttackAreas;
         BaseEnemy currentAttackTarget;
 
         public GameObject attackAreaIndicator;
@@ -22,6 +24,8 @@ namespace Battle
 
         public bool isIdling;
         public bool isAttacking;
+        public bool isSpecialAttacking;
+
 
         public int cost;
 
@@ -31,8 +35,53 @@ namespace Battle
 
         Animator animator;
 
-        
-        
+        public Slider energySlider;
+
+        public Action OnEnergyChanged;
+        public Action OnAttack;
+        public Action OnHurt;
+
+        protected float attackDelay = 0.5f;
+        protected float specialAttackDelay = 0.5f;
+
+        protected float currentEnergy;
+        protected float maxEnergy;
+       
+
+        public float CurrentEnergy
+        {
+            get
+            {
+                return currentEnergy;
+            }
+            protected set
+            {
+                OnEnergyChanged();
+                currentEnergy = value;
+                if (currentEnergy >= maxEnergy)
+                {
+                    SpecialAttack();
+                }
+            }
+        }
+
+   
+        public BaseOperator()
+        {
+            OnEnergyChanged += RefreshEnergySlider;
+            OnAttack += OnAttack_EnergyAdd;
+        }
+        private void OnDestroy()
+        {
+            OnEnergyChanged -= RefreshEnergySlider;
+            OnAttack -= OnAttack_EnergyAdd;
+
+            foreach (MapUnitPre item in attackAreas)
+            {
+                item.enemyEnter -= AddEnermy;
+                item.enemyExit -= RemoveEnermy;
+            }
+        }
         protected virtual void Awake()
         {
             cost = 10;
@@ -55,15 +104,42 @@ namespace Battle
         { 
             if (isInited)
                 CalCurrentAttackTarget();
+
+            TimePass_EnergyAdd();
         }
         private void FixedUpdate()
         {
             if (isInited)
             {
+                if (currentEnergy >= maxEnergy)
+                {
+                    SpecialAttack();
+                }
+                else
+                {
+                    Attack();
+                }
                 
-                Attack();
             }
 
+        }
+        protected virtual void TimePass_EnergyAdd()
+        {
+            Debug.LogWarning("TimePass_EnergyAdd未override");
+        }
+        protected virtual void OnAttack_EnergyAdd()
+        {
+            Debug.LogWarning("OnAttack_EnergyAdd未override");
+        }
+        protected virtual void OnHurt_EnergyAdd()
+        {
+            Debug.LogWarning("OnHurt_EnergyAdd未override");
+        }
+
+        void RefreshEnergySlider()
+        {
+            if (energySlider != null)
+                energySlider.value = CurrentEnergy / maxEnergy;
         }
         void RemoveNull()
         {
@@ -113,8 +189,10 @@ namespace Battle
                 //Debug.Log(enemiesInAttackAreas.Count);
                 isIdling = true;
                 isAttacking = false;
+                isSpecialAttacking = false;
                 animator.SetBool("isIdling", true);
                 animator.SetBool("isAttacking", false);
+                animator.SetBool("isSpecialAttacking", false);
                 attackTimer = m_attackInterval;
                 return;
             }
@@ -122,27 +200,80 @@ namespace Battle
             {
                 isAttacking = true;
                 isIdling = false;
+                isSpecialAttacking = false;
                 animator.SetBool("isIdling", false);
                 animator.SetBool("isAttacking", true);
+                animator.SetBool("isSpecialAttacking", false);
                 attackTimer = 0;
 
                 if (currentAttackTarget != null)
                 {
-                    currentAttackTarget.Hurt(m_attack, AttackKind.Physics);
-                    currentAttackTarget.Hurt(m_attack, AttackKind.Magic);
+                    StartCoroutine(IEAttack());
                 }
             }
             else
             {
                 isAttacking = false;
                 isIdling = true;
+                isSpecialAttacking = false;
                 animator.SetBool("isIdling", true);
                 animator.SetBool("isAttacking", false);
+                animator.SetBool("isSpecialAttacking", false);
                 attackTimer += Time.deltaTime;
             }
 
         }
+        IEnumerator IEAttack()
+        {
+            yield return new WaitForSeconds(attackDelay);
+            if (OnAttack != null)
+            {
+                OnAttack();
+            }
+            if (currentAttackTarget != null)
+                AttackDetail();
+        }
+        protected virtual void AttackDetail()
+        {
+            currentAttackTarget.Hurt(m_attack, AttackKind.Physics);
+            currentAttackTarget.Hurt(m_attack, AttackKind.Magic);
+        }
 
+        void SpecialAttack()
+        {
+            if (currentAttackTarget == null)
+            {
+                isAttacking = false;
+                isIdling = true;
+                isSpecialAttacking = false;
+                animator.SetBool("isIdling", true);
+                animator.SetBool("isAttacking", false);
+                animator.SetBool("isSpecialAttacking", false);
+                return;
+            }
+            else
+            {
+                isAttacking = false;
+                isIdling = false;
+                isSpecialAttacking = true;
+                animator.SetBool("isIdling", false);
+                animator.SetBool("isAttacking", false);
+                animator.SetBool("isSpecialAttacking", true);
+
+                CurrentEnergy = 0;
+
+                StartCoroutine(IESpecialAttack());
+            }      
+        }
+        IEnumerator IESpecialAttack()
+        {
+            yield return new WaitForSeconds(specialAttackDelay);
+            SpecialAttackDetail();
+        }
+        protected virtual void SpecialAttackDetail()
+        {
+            Debug.LogWarning("未定义特殊攻击");
+        }
         public void ShowAttackArea()
         {
             foreach (Vector2 item in attackAreasPos)
@@ -197,14 +328,7 @@ namespace Battle
                 item.enemyExit -= RemoveEnermy;
             }
         }
-        private void OnDestroy()
-        {
-            foreach (MapUnitPre item in attackAreas)
-            {
-                item.enemyEnter -= AddEnermy;
-                item.enemyExit -= RemoveEnermy;
-            }
-        }
+        
         void AddEnermy(List<BaseEnemy> enermyList)
         {
             foreach(BaseEnemy item in enermyList)

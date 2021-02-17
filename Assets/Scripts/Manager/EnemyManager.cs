@@ -49,9 +49,9 @@ public class EnemyManager : Singleton<EnemyManager>
         
         enemySpawnList.Add(0.5f);
         enemySpawnList.Add(enemyPrefabDic[EnemyType.Dog]);
-        enemySpawnList.Add(2f);
+        enemySpawnList.Add(5f);
         enemySpawnList.Add(enemyPrefabDic[EnemyType.Dog]);
-        enemySpawnList.Add(3f);
+        enemySpawnList.Add(5f);
         enemySpawnList.Add(enemyPrefabDic[EnemyType.Dog]);
     }
     public void GetMap()

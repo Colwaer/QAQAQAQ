@@ -19,6 +19,10 @@ public class Dog : BaseEnemy
         m_defend = 10f;
         m_magicDamage = 15f;
         m_magicDefend = 10f;
+        m_attackDistance = 1.0f;
+        m_attackInterval = 2.0f;
+
+        attackDelayTime = 1.2f;
     }
     
 }

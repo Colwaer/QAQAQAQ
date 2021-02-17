@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
+
 namespace Battle
 {
     public enum AttackKind { Physics = 0, Magic, Real }
@@ -15,7 +17,13 @@ namespace Battle
         protected float m_magicDefend;
 
 
+        public Slider healthSlider;
+
         public Action DieEvent;
+        
+
+
+        protected Action OnHealthChanged;
         protected float health;
 
         public float Health
@@ -23,6 +31,8 @@ namespace Battle
             get { return health; }
             private set
             {
+                if (OnHealthChanged != null)
+                    OnHealthChanged();
                 if (value <= 0) 
                     if (DieEvent != null)
                         DieEvent();
@@ -33,6 +43,17 @@ namespace Battle
         public BaseCharacter()
         {
             DieEvent += Die;
+            OnHealthChanged += RefreshHealthSlider;
+        }
+        private void OnDestroy()
+        {
+            DieEvent -= Die;
+            OnHealthChanged -= RefreshHealthSlider;
+        }
+        void RefreshHealthSlider()
+        {
+            if (healthSlider != null)
+                healthSlider.value = Health / m_maxHelath;
         }
         virtual protected void Recover(float delta)
         {
