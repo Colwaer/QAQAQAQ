@@ -8,54 +8,57 @@ namespace Battle
 
     public class BaseCharacter : MonoBehaviour
     {
-        private float m_maxHelath;
-        private float m_attack;
-        private float m_defend;
-        private float m_magicDamage;
-        private float m_magicDefend;
+        protected float m_maxHelath;
+        protected float m_attack;
+        protected float m_defend;
+        protected float m_magicDamage;
+        protected float m_magicDefend;
 
 
         public Action DieEvent;
+        protected float health;
+
         public float Health
         {
-            get { return Health; }
+            get { return health; }
             private set
             {
                 if (value <= 0) 
-                    DieEvent();
-                Health = value;
+                    if (DieEvent != null)
+                        DieEvent();
+                health = value;
             }
         }
-        public BaseCharacter(float attack, float defend, float magicDamage, float magicDefend, float maxHelath)
+        
+        public BaseCharacter()
         {
-            m_attack = attack;
-            m_defend = defend;
-            m_magicDamage = magicDamage;
-            m_magicDefend = magicDefend;
-            m_maxHelath = maxHelath;
+            DieEvent += Die;
         }
         virtual protected void Recover(float delta)
         {
             Health = Mathf.Min(m_maxHelath, delta + Health);
         }
-        virtual protected void Hurt(float delta, AttackKind kind)
+        virtual public void Hurt(float delta, AttackKind kind)
         {
             switch (kind)
             {
                 case AttackKind.Physics:
-                    delta = Mathf.Min(0, delta + m_defend);
+                    delta = Mathf.Min(0, -delta + m_defend);
                     break;
                 case AttackKind.Magic:
-                    delta = Mathf.Min(0, delta + m_magicDefend);
+                    delta = Mathf.Min(0, -delta + m_magicDefend);
                     break;
                 case AttackKind.Real:
-                    delta = Mathf.Min(0, delta);
+                    delta = Mathf.Min(0, -delta);
                     break;
             }
             Health = Mathf.Max(0,delta + Health);
         }
     
-        
+        void Die()
+        {
+            Destroy(gameObject);
+        }
         
     }
 }

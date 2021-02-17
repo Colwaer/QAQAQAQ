@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Map
 {
-public class PathSearch : MonoBehaviour
+public class PathSearch : Singleton<PathSearch>
 {
         public List<List<MapUnit>> Map = new List<List<MapUnit>>();
 
@@ -27,18 +27,9 @@ public class PathSearch : MonoBehaviour
         private void Update()
         {
 
-            if(Input.GetKeyDown(KeyCode.S))
-            {
-                Search();
-                //foreach(Vector2 p in path)
-                //{
-                //    Debug.Log(p);
-                //}
-                //Debug.Log(startPos);
-                //Debug.Log(endPos);
-            }
+           
         }
-        void Search()
+        public void Search()
         {
             GetCurrentMap();
             openList.Clear();

@@ -5,11 +5,20 @@ using Battle;
 
 public class Dog : BaseEnemy
 {
-    
-
-    public Dog(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance)
-            : base(attack, defend, magicDamage, magicDefend, maxHelath, attackDistance)
+    protected override void Start()
     {
-        
+        base.Start();
+        Init();
     }
+    
+    void Init()
+    {
+        health = 100f;
+        m_maxHelath = 100f;
+        m_attack = 20f;
+        m_defend = 10f;
+        m_magicDamage = 15f;
+        m_magicDefend = 10f;
+    }
+    
 }

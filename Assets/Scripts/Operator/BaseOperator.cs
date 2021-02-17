@@ -31,11 +31,7 @@ namespace Battle
 
         Animator animator;
 
-        public BaseOperator(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance)
-            : base(attack, defend, magicDamage, magicDefend, maxHelath)
-        {
-
-        }
+        
         
         protected virtual void Awake()
         {
@@ -130,7 +126,11 @@ namespace Battle
                 animator.SetBool("isAttacking", true);
                 attackTimer = 0;
 
-                Debug.Log("Operator attack");
+                if (currentAttackTarget != null)
+                {
+                    currentAttackTarget.Hurt(m_attack, AttackKind.Physics);
+                    currentAttackTarget.Hurt(m_attack, AttackKind.Magic);
+                }
             }
             else
             {

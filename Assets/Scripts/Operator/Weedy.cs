@@ -12,7 +12,18 @@ public class Weedy : BaseOperator
     protected override void Awake()
     {
         base.Awake();
+        Init();
+    }
+
+    void Init()
+    {
         cost = 3;
+        health = 100f;
+        m_maxHelath = 100f;
+        m_attack = 20f;
+        m_defend = 10f;
+        m_magicDamage = 15f;
+        m_magicDefend = 10f;
     }
 
     public override void ShowDirChoosePanel()
@@ -34,9 +45,5 @@ public class Weedy : BaseOperator
 
 
 
-    public Weedy(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance)
-            : base(attack, defend, magicDamage, magicDefend, maxHelath, attackDistance)
-    {
-
-    }
+    
 }

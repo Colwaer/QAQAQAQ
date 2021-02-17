@@ -9,6 +9,8 @@ public class MapInSceneManager : Singleton<MapInSceneManager>
 
     public int xMax;
     public int yMax;
+
+    
     
     public void Init(int xMax, int yMax)
     {

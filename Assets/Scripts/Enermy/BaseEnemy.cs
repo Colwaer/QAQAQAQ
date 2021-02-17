@@ -26,7 +26,10 @@ namespace Battle
         Rigidbody2D rb;
         Animator animator;
 
-        private void Start()
+        BaseOperator attackTarget;
+
+
+        protected virtual void Start()
         {
             m_attackInterval = 2.0f;
             Physics2D.queriesStartInColliders = false;
@@ -89,8 +92,10 @@ namespace Battle
             
             if (hit.collider != null)
             {            
+                
                 if (attackTimer >= m_attackInterval)
                 {
+                    attackTarget = hit.collider.GetComponent<BaseOperator>();
                     isMoving = false;
                     isAttacking = true;
                     isIdling = false;
@@ -99,8 +104,13 @@ namespace Battle
                     animator.SetBool("isIdling", false);
 
                     attackTimer = 0;
-                    
-                    Debug.Log("Attack");
+                    if (attackTarget != null)
+                    {
+                        Debug.Log(attackTarget.Health);
+                        attackTarget.Hurt(m_attack, AttackKind.Physics);
+                        attackTarget.Hurt(m_magicDamage, AttackKind.Magic);                      
+                    }
+                                         
                 }
                 else
                 {
@@ -128,15 +138,13 @@ namespace Battle
 
         public void GetPath()
         {
-            List<Vector2> temp = new List<Vector2>(GameObject.FindGameObjectWithTag("SearchManager").GetComponent<PathSearch>().path.ToArray());
+            List<Vector2> temp = new List<Vector2>(PathSearch.Instance.path.ToArray());
             path = temp;
         }
 
-        public BaseEnemy(float attack, float defend, float magicDamage, float magicDefend, float maxHelath, float attackDistance) 
-            : base(attack, defend, magicDamage, magicDefend, maxHelath)
+        public BaseEnemy()
         {
-            m_attackDistance = attackDistance;
-            path = GameObject.FindGameObjectWithTag("SearchManager").GetComponent<PathSearch>().path;
+            
         }
     }
 }
