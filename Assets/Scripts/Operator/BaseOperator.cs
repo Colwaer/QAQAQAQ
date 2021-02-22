@@ -12,14 +12,14 @@ namespace Battle
         List<MapUnitPre> attackAreas;
 
         protected List<BaseEnemy> enemiesInAttackAreas;
-        BaseEnemy currentAttackTarget;
+        protected BaseEnemy currentAttackTarget;
 
         public GameObject attackAreaIndicator;
         List<GameObject> attackAreaIndicatorList;
 
         Vector2[] attackAreasPos;
 
-        private float m_attackInterval;
+        protected float m_attackInterval;
         private float attackTimer = 0;
 
         public bool isIdling;
@@ -27,13 +27,26 @@ namespace Battle
         public bool isSpecialAttacking;
 
 
+
         public int cost;
+        public int Cost
+        {
+            get
+            {
+                return cost;
+            }
+        }
 
         bool isInited;
 
+        protected bool forceSpecialAttack = false;
+
         public PlaceDirection placeDirection;
 
-        Animator animator;
+        protected Animator animator;
+        protected AnimatorOverrideController animatorOverrideController;
+        public AnimationClip specialAttack1Clip;
+        public AnimationClip specialAttack2Clip;
 
         public Slider energySlider;
 
@@ -41,12 +54,15 @@ namespace Battle
         public Action OnAttack;
         public Action OnHurt;
 
+        public Action CurrentSpecialAttack;
+
         protected float attackDelay = 0.5f;
         protected float specialAttackDelay = 0.5f;
 
         protected float currentEnergy;
         protected float maxEnergy;
-       
+        
+
 
         public float CurrentEnergy
         {
@@ -58,10 +74,7 @@ namespace Battle
             {
                 OnEnergyChanged();
                 currentEnergy = value;
-                if (currentEnergy >= maxEnergy)
-                {
-                    SpecialAttack();
-                }
+                
             }
         }
 
@@ -81,15 +94,18 @@ namespace Battle
                 item.enemyEnter -= AddEnermy;
                 item.enemyExit -= RemoveEnermy;
             }
+
+            CurrentSpecialAttack -= CurrentSpecialAttack;
         }
         protected virtual void Awake()
         {
-            cost = 10;
             isIdling = true;
             isAttacking = false;
             m_attackInterval = 1.0f;
 
             animator = GetComponent<Animator>();
+            animatorOverrideController = new AnimatorOverrideController(animator.runtimeAnimatorController);
+            animator.runtimeAnimatorController = animatorOverrideController;
 
             attackAreas = new List<MapUnitPre>();
             enemiesInAttackAreas = new List<BaseEnemy>();
@@ -104,22 +120,21 @@ namespace Battle
         { 
             if (isInited)
                 CalCurrentAttackTarget();
-
+            
             TimePass_EnergyAdd();
         }
         private void FixedUpdate()
         {
             if (isInited)
             {
-                if (currentEnergy >= maxEnergy)
+                if (currentEnergy >= maxEnergy || forceSpecialAttack)
                 {
                     SpecialAttack();
                 }
                 else
                 {
                     Attack();
-                }
-                
+                }               
             }
 
         }
@@ -141,7 +156,7 @@ namespace Battle
             if (energySlider != null)
                 energySlider.value = CurrentEnergy / maxEnergy;
         }
-        void RemoveNull()
+        protected void RemoveNull()
         {
             for (int i = 0; i < enemiesInAttackAreas.Count; i++)
             {
@@ -251,7 +266,7 @@ namespace Battle
                 animator.SetBool("isSpecialAttacking", false);
                 return;
             }
-            else
+            if (attackTimer >= m_attackInterval)
             {
                 isAttacking = false;
                 isIdling = false;
@@ -259,21 +274,73 @@ namespace Battle
                 animator.SetBool("isIdling", false);
                 animator.SetBool("isAttacking", false);
                 animator.SetBool("isSpecialAttacking", true);
+                attackTimer = 0;
 
-                CurrentEnergy = 0;
 
-                StartCoroutine(IESpecialAttack());
+                if (CurrentSpecialAttack == null)
+                {
+                    LoadSpecialAttack1();
+                    CurrentSpecialAttack();
+                }
+                else
+                {
+                    CurrentSpecialAttack();
+                }
+            }
+            else
+            {
+                isAttacking = false;
+                isIdling = true;
+                isSpecialAttacking = false;
+                animator.SetBool("isIdling", true);
+                animator.SetBool("isAttacking", false);
+                animator.SetBool("isSpecialAttacking", false);
+                attackTimer += Time.deltaTime;
             }      
         }
-        IEnumerator IESpecialAttack()
+        void LoadSpecialAttack1()
+        {
+            CurrentSpecialAttack -= CurrentSpecialAttack;
+            CurrentSpecialAttack += SpecialAttack1;
+
+            animatorOverrideController["OriginSpecialAttack"] = specialAttack2Clip;
+        }
+        void LoadSpecialAttack2()
+        {
+            CurrentSpecialAttack -= CurrentSpecialAttack;
+            CurrentSpecialAttack += SpecialAttack2;
+
+
+            animatorOverrideController["OriginSpecialAttack"] = specialAttack2Clip;
+        }
+        void SpecialAttack1()
+        {
+            StartCoroutine(IESpecialAttack1());
+        }
+        IEnumerator IESpecialAttack1()
         {
             yield return new WaitForSeconds(specialAttackDelay);
-            SpecialAttackDetail();
+            SpecialAttackDetail1();
         }
-        protected virtual void SpecialAttackDetail()
+        void SpecialAttack2()
         {
-            Debug.LogWarning("未定义特殊攻击");
+            StartCoroutine(IESpecialAttack2());
         }
+        IEnumerator IESpecialAttack2()
+        {
+            yield return new WaitForSeconds(specialAttackDelay);
+            SpecialAttackDetail2();
+        }
+        protected virtual void SpecialAttackDetail1()
+        {
+            Debug.LogWarning("未定义特殊攻击1");
+        }
+        protected virtual void SpecialAttackDetail2()
+        {
+            Debug.LogWarning("未定义特殊攻击2");
+        }
+
+
         public void ShowAttackArea()
         {
             foreach (Vector2 item in attackAreasPos)

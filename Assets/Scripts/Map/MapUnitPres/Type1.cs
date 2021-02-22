@@ -9,7 +9,7 @@ namespace Battle
         private void Start()
         {
             type = UnitType.type1;
-            canPlaceOperator = true;
+            //canPlaceOperator = true;
         }
     }
 }

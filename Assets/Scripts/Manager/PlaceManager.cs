@@ -93,16 +93,21 @@ namespace Battle
             if (!IsMousePosInMap())
                 return;
             //Debug.Log("MousePosInMap");
-            if (!MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator)
-                return;
+            //if (!MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator)
+            //    return;
             
             if (Input.GetMouseButtonDown(0))
             {
                 if (!m_AssetReady)
                     return;
                 IsPlacingOperator = false;
+
                 if (!MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator)
+                {
+                    //Debug.Log(MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator);
                     return;
+                }
+                    
 
                 //Debug.Log("Place Operator");
                 
@@ -111,7 +116,9 @@ namespace Battle
                 //临时处理导致每次修改干员花费时要修改prefab和干员脚本
                 curOperator = operatorPres[UnityEngine.Random.Range(0, operatorPres.Length)];
 
-                if (!OnPlaceOperator(curOperator.GetComponent<BaseOperator>().cost))
+
+
+                if (!OnPlaceOperator(curOperator.GetComponent<BaseOperator>().Cost))
                 {
                     Debug.LogWarning("cost too much");
                     return;
@@ -119,7 +126,7 @@ namespace Battle
 
                 curOperator = operators[m_CharacterIndex].InstantiateAsync().Result;
 
-                MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).canPlaceOperator = false;
+                MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).currentOperator = curOperator.GetComponent<BaseOperator>();
 
 
 

@@ -41,7 +41,7 @@ public class CostManager : Singleton<CostManager>
     }
     public bool Pay(float price)
     {
-        Debug.Log(price);
+        //Debug.Log(price);
         if(price < 0)
         {
             Debug.LogError("Invalid Cost");

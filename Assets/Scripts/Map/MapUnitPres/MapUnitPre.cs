@@ -11,9 +11,25 @@ namespace Battle
     {
         public UnitType type;
 
-        public bool canPlaceOperator { get; set; }
+        //public Action onEnemyEnter;
+
+        public bool canPlaceOperator
+        {
+            get
+            {
+                if (type != UnitType.type1 && type != UnitType.type2)
+                {
+                    return false;
+                }
+                    
+                //Debug.Log(currentOperator == null);
+                return currentOperator == null;
+            }
+        }
 
         List<BaseEnemy> enemies;
+
+        public BaseOperator currentOperator;
 
         float broadCastTimer = 0;
         float broadCastTime = 0.7f;
@@ -59,6 +75,7 @@ namespace Battle
             broadCastTime = 0;
             if (collision.tag == "Enermy" && !enemies.Contains(collision.gameObject.GetComponent<BaseEnemy>()))
             {
+
                 RemoveNull();
                 enemies.Add(collision.gameObject.GetComponent<BaseEnemy>());
                 if (enemyEnter != null)

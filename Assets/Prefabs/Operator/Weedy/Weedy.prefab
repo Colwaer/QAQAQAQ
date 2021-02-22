@@ -410,11 +410,16 @@ MonoBehaviour:
   isIdling: 0
   isAttacking: 0
   isSpecialAttacking: 0
-  cost: 3
+  cost: 2
   placeDirection: 0
+  specialAttack1Clip: {fileID: 7400000, guid: a65cf6589b8f3a5499187bd2ac4aaa0e, type: 2}
+  specialAttack2Clip: {fileID: 7400000, guid: de82337647e913448ac402064d7452d8, type: 2}
   energySlider: {fileID: 72062023313205949}
   weedyDirChoosePanelPre: {fileID: 493430343887485328, guid: 8f8ca6bea9c38f04f947cd1d5ff12565,
     type: 3}
+  specialAttackIdleClip: {fileID: 7400000, guid: 66b3c56eae12008469538e26f6d42c0d,
+    type: 2}
+  idleClip: {fileID: 7400000, guid: ffe7b443123f0f44298bb017dddcb016, type: 2}
 --- !u!1 &5793018449197424530
 GameObject:
   m_ObjectHideFlags: 0
