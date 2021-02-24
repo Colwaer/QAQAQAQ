@@ -209,7 +209,7 @@ namespace Map
 
         public void Save()
         {
-            MapSaver.Save(savePath,mapEntity);
+            MapSaver.Save(savePath, mapEntity);
         }
         public void Load()
         {
@@ -224,6 +224,7 @@ namespace Map
 
         public void ChangePath(string path)
         {
+            Debug.Log(path);
             if (path != "" && path.Length < 50)
                 savePath = path;
         }

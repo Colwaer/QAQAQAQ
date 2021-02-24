@@ -6,7 +6,7 @@ namespace Map
 {
     public class MapSaver 
     {
-        public static void Save(string savePath,MapEntity entity)
+        public static void Save(string savePath, MapEntity entity)
         {
             //检测是否能保存
             bool canBeSaved = false;
