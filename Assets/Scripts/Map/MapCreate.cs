@@ -16,6 +16,8 @@ namespace Map
         public MapEntity mapEntity;
         public GameObject[] MapUnitPres;
 
+        public bool isGaming;
+
         //List<Sprite> MapUnitSprites = new List<Sprite>();
 
         //所有已经绘制的格子的副本
@@ -47,12 +49,19 @@ namespace Map
             mapEntity = new MapEntity(xMax, yMax, Vector2.zero, Vector2.zero);
             MapInSceneManager.Instance.Init(xMax, yMax);
             Gizmos.color = Color.red;
-            mouseIndicator = Instantiate(mouseIndicator);
-            mouseIndicator.transform.position = Vector2.zero;
+            if (!isGaming)
+            {
+                mouseIndicator = Instantiate(mouseIndicator);
+                mouseIndicator.transform.position = Vector2.zero;
+            }
+            
         }
 
         private void Update()
         {
+            if (isGaming)
+                return;
+
             if(!IsShelter())
             {
                 HighlightUnit();
@@ -217,8 +226,13 @@ namespace Map
 
             //load以后的小处理
             MapInSceneManager.Instance.Init(mapEntity.xMax, mapEntity.yMax);
-            startPosText.text = "起点坐标:" + mapEntity.StartPos.x + "," + mapEntity.StartPos.y;
-            endPosText.text = "终点坐标:" + mapEntity.EndPos.x + "," + mapEntity.EndPos.y;
+
+            if (!isGaming)
+            {
+                startPosText.text = "起点坐标:" + mapEntity.StartPos.x + "," + mapEntity.StartPos.y;
+                endPosText.text = "终点坐标:" + mapEntity.EndPos.x + "," + mapEntity.EndPos.y;
+            }
+            
             DrawMap();
         }
 

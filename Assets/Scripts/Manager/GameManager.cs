@@ -39,6 +39,9 @@ public class GameManager : MonoBehaviour
     }
     public void GameStart()
     {
+        MapCreate.Instance.ChangePath("123");
+
+        MapCreate.Instance.Load();
 
         PathSearch.Instance.Search();
         EnemyManager.Instance.GetMap();
@@ -47,8 +50,6 @@ public class GameManager : MonoBehaviour
 
         endPos = MapCreate.Instance.mapEntity.EndPos;
 
-
-        
         MapInSceneManager.Instance.GetMapUnitPre((int)endPos.x, (int)endPos.y).enemyEnter += EnemyEscape;
 
         isGameStarted = true;

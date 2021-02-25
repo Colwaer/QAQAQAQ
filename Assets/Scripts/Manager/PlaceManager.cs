@@ -20,6 +20,8 @@ namespace Battle
         //取整后的坐标
         public Vector2 MousePosition;
 
+        public GameObject[] placePanels;
+
         public List<AssetReference> operators;
 
         public GameObject[] operatorPres;
@@ -127,7 +129,9 @@ namespace Battle
                 curOperator = operators[m_CharacterIndex].InstantiateAsync().Result;
 
                 MapInSceneManager.Instance.GetMapUnitPre((int)MousePosition.x, (int)MousePosition.y).currentOperator = curOperator.GetComponent<BaseOperator>();
-
+                //********************************ONPlaceOperator
+                placePanels[0].GetComponent<PlaceCD>().DisablePlace(1.5f);
+                //*******************************
 
 
                 curOperator.transform.position = MousePosition;
