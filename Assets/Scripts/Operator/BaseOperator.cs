@@ -303,7 +303,7 @@ namespace Battle
             CurrentSpecialAttack -= CurrentSpecialAttack;
             CurrentSpecialAttack += SpecialAttack1;
 
-            animatorOverrideController["OriginSpecialAttack"] = specialAttack2Clip;
+            animatorOverrideController["OriginSpecialAttack"] = specialAttack1Clip;
         }
         void LoadSpecialAttack2()
         {
